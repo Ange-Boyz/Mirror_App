@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Life Mirror — Dark Blue Edition</title>
+  <style>
+    :root{
+      --bg-0:#051026; --bg-1:#071a2b; --card:#071a3a; --muted:rgba(255,255,255,0.65);
+      --accent:#2b8eff; --accent-2:#60a5fa; --soft:#0b1220; --glass:rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;color:#e6eef6;background:linear-gradient(180deg,var(--bg-0),var(--bg-1));}
+    .wrap{max-width:900px;margin:28px auto;padding:20px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    header h1{font-size:18px;margin:0}
+    header small{color:var(--muted)}
+
+    /* wizard layout */
+    .steps{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:12px}
+    .step{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--glass-2);color:var(--muted);font-weight:700}
+    .step.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 22px rgba(43,142,255,0.18);color:white}
+
+    .content{display:grid;grid-template-columns:1fr 320px;gap:16px}
+    @media(max-width:840px){.content{grid-template-columns:1fr}}
+
+    .main{padding:8px}
+    .side{padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border-radius:12px}
+
+    label{display:block;font-size:14px;margin-bottom:6px;color:var(--muted)}
+    input[type=text],input[type=number],textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    textarea{min-height:90px}
+
+    .row{display:flex;gap:10px}
+    .row .col{flex:1}
+
+    .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+    button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:white;cursor:pointer;font-weight:700}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+
+    .life-visual{overflow:auto;padding:10px;border-radius:10px;margin-top:12px}
+    .grid{display:grid;grid-template-columns:repeat(52,12px);gap:4px;align-items:center}
+    .cell{width:12px;height:10px;border-radius:3px;background:rgba(255,255,255,0.03)}
+    .cell.past{background:linear-gradient(90deg,#083154,#052838)}
+    .cell.now{outline:2px solid rgba(43,142,255,0.28)}
+
+    @media(max-width:720px){.grid{grid-template-columns:repeat(26,10px)}.cell{width:10px;height:8px}}
+
+    .question{animation:fadeSlide .35s ease}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    .muted{color:var(--muted)}
+    .big{font-size:20px;font-weight:700}
+
+    /* report */
+    .report{margin-top:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px}
+    .advice{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px;border-radius:8px;color:white;margin-top:8px}
+
+    .lang-toggle{display:flex;gap:6px}
+    .lang-toggle button{padding:6px 8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+    .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0}
+
+    footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="card">
+      <div>
+        <h1>Life Mirror — Dark Blue</h1>
+        <small>Un outil introspectif pour te donner conscience du temps.</small>
+      </div>
+      <div class="lang-toggle" aria-hidden>
+        <button id="langFr" class="active">FR</button>
+        <button id="langEn">EN</button>
+      </div>
+    </header>
+
+    <div class="card content">
+      <div class="main">
+        <div class="steps" id="steps"></div>
+
+        <div id="stepContent">
+          <!-- dynamic question content goes here -->
+        </div>
+
+        <div class="controls">
+          <button id="prevBtn" class="ghost">Précédent</button>
+          <button id="nextBtn">Suivant</button>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="row">
+          <div class="col">
+            <label id="lblName">Nom</label>
+            <input id="inputName" type="text" placeholder="Ex: Ange" />
+          </div>
+        </div>
+
+        <div style="margin-top:8px">
+          <label id="lblAge">Âge actuel</label>
+          <input id="inputAge" type="number" min="0" max="130" value="20" />
+        </div>
+
+        <div style="margin-top:8px">
+          <label id="lblDeath">Âge estimé pour mourir</label>
+          <input id="inputDeath" type="number" min="1" max="140" value="80" />
+        </div>
+
+        <div class="life-visual" id="lifePreview">
+          <div class="muted">Aperçu de la vie</div>
+          <div class="grid" id="gridPreview"></div>
+        </div>
+
+        <div style="margin-top:10px">
+          <div class="muted">Résumé rapide</div>
+          <div class="big" id="quickPercent">0%</div>
+          <div class="muted" id="quickLeft">0 semaines restantes</div>
+        </div>
+
+      </aside>
+    </div>
+
+    <div id="finalReport" class="card" style="display:none;margin-top:12px">
+      <h2>Rapport & Conseils</h2>
+      <div id="reportContent"></div>
+      <div class="advice" id="finalAdvice"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button id="downloadJSON" class="ghost">Télécharger le rapport</button>
+        <button id="restart">Recommencer</button>
+      </div>
+    </div>
+
+    <footer>Prototype — usage personnel. Tes réponses sont stockées localement dans le navigateur si tu veux revenir.</footer>
+  </div>
+
+  <script>
+    // Questions list (FR / EN)
+    const Q = {
+      fr: [
+        {id:'q_regret', title:"Si tu mourais cette année, quel serait ton plus grand regret ?", type:'textarea', placeholder:'Ex: Ne pas avoir essayé mon projet'},
+        {id:'q_loved', title:"As-tu des personnes qui t'aiment réellement aujourd'hui ?", type:'options', options:['Oui','Un peu','Je ne sais pas','Non']},
+        {id:'q_last_thanks', title:"Quand as-tu dit 'merci' ou 'je t'aime' pour la dernière fois ?", type:'text', placeholder:'Ex: Hier, il y a 1 semaine...'},
+        {id:'q_dream', title:"As-tu un rêve que tu repousses depuis longtemps ? Lequel ?", type:'textarea'},
+        {id:'q_project', title:"Si tu avais 5 ans à vivre, quel projet commencerais-tu demain ?", type:'textarea'},
+        {id:'q_pride', title:"Es-tu fier(e) de la personne que tu deviens ?", type:'options', options:['Oui','Presque','Pas vraiment','Pas du tout']},
+        {id:'q_health', title:"Comment te sens-tu physiquement ces derniers mois ?", type:'textarea'},
+        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ? (ex: marcher 20min)", type:'text'},
+        {id:'q_fear', title:"Qu'est-ce qui te fait le plus peur dans la vie aujourd'hui ?", type:'textarea'},
+        {id:'q_commit', title:"En 1 phrase : Quel est le premier petit pas que tu peux faire demain ?", type:'text', placeholder:'Ex: écrire 15 min sur mon projet'}
+      ],
+      en: [
+        {id:'q_regret', title:"If you died this year, what would be your biggest regret?", type:'textarea', placeholder:'E.g. Not trying my project'},
+        {id:'q_loved', title:"Do you have people who truly love you today?", type:'options', options:['Yes','Somewhat','I don\'t know','No']},
+        {id:'q_last_thanks', title:"When did you last say 'thank you' or 'I love you' to someone?", type:'text', placeholder:'E.g. Yesterday, a week ago...'},
+        {id:'q_dream', title:"Do you have a dream you've been postponing? Which one?", type:'textarea'},
+        {id:'q_project', title:"If you had 5 years to live, which project would you start tomorrow?", type:'textarea'},
+        {id:'q_pride', title:"Are you proud of who you are becoming?", type:'options', options:['Yes','Almost','Not really','Not at all']},
+        {id:'q_health', title:"How have you been feeling physically these past months?", type:'textarea'},
+        {id:'q_habit', title:"Which simple habit could improve your life? (e.g. walk 20min)", type:'text'},
+        {id:'q_fear', title:"What scares you most in life today?", type:'textarea'},
+        {id:'q_commit', title:"In one sentence: What is the first small step you can take tomorrow?", type:'text', placeholder:'E.g. write 15 minutes about my idea'}
+      ]
+    };
+
+    // State
+    let lang = 'fr';
+    let stepIndex = 0;
+    let answers = {};
+
+    const langFr = document.getElementById('langFr');
+    const langEn = document.getElementById('langEn');
+
+    function setLang(l){
+      lang = l; if(l==='fr'){langFr.classList.add('active');langEn.classList.remove('active')}else{langEn.classList.add('active');langFr.classList.remove('active')}
+      renderSteps(); renderStepContent(); renderSideLabels(); updatePreview();
+    }
+    langFr.addEventListener('click', ()=>setLang('fr'));
+    langEn.addEventListener('click', ()=>setLang('en'));
+
+    // Steps UI
+    function renderSteps(){
+      const stepsEl = document.getElementById('steps'); stepsEl.innerHTML='';
+      const qs = Q[lang];
+      for(let i=0;i<qs.length;i++){
+        const s = document.createElement('div'); s.className='step'+(i===stepIndex? ' active':''); s.textContent = i+1; stepsEl.appendChild(s);
+      }
+    }
+
+    // Side labels
+    function renderSideLabels(){
+      document.getElementById('lblName').textContent = (lang==='fr'?'Nom':'Name');
+      document.getElementById('lblAge').textContent = (lang==='fr'?'Âge actuel':'Your Age');
+      document.getElementById('lblDeath').textContent = (lang==='fr'?'Âge estimé pour mourir':'Expected age of death');
+      document.getElementById('inputName').placeholder = (lang==='fr'?'Ex: Ange':'Ex: John');
+    }
+
+    // Step content
+    function renderStepContent(){
+      const container = document.getElementById('stepContent'); container.innerHTML='';
+      const qs = Q[lang];
+      const q = qs[stepIndex];
+
+      const wrapper = document.createElement('div'); wrapper.className='question';
+      const title = document.createElement('h3'); title.textContent = q.title; title.style.marginBottom='10px'; wrapper.appendChild(title);
+
+      let input;
+      if(q.type==='textarea'){
+        input = document.createElement('textarea'); input.id='currentAnswer'; input.placeholder = q.placeholder || '';
+        input.value = answers[q.id] || '';
+      } else if(q.type==='options'){
+        input = document.createElement('div'); input.id='currentAnswer'; input.style.display='flex'; input.style.gap='8px';
+        q.options.forEach(opt => {
+          const b = document.createElement('button'); b.type='button'; b.className='ghost'; b.textContent = opt; b.style.flex='1';
+          if(answers[q.id] === opt) b.classList.add('activeOption');
+          b.addEventListener('click', ()=>{ answers[q.id]=opt; // visual
+            Array.from(input.querySelectorAll('button')).forEach(x=>x.classList.remove('activeOption'));
+            b.classList.add('activeOption');
+          });
+          input.appendChild(b);
+        });
+      } else {
+        input = document.createElement('input'); input.type = q.type==='number'?'number':'text'; input.id='currentAnswer'; input.placeholder = q.placeholder || '';
+        input.value = answers[q.id] || '';
+      }
+
+      wrapper.appendChild(input);
+      container.appendChild(wrapper);
+
+      // accessibility: focus
+      setTimeout(()=>{ const el = document.getElementById('currentAnswer'); if(el) el.focus(); },50);
+      renderSteps();
+    }
+
+    // Prev / Next
+    document.getElementById('prevBtn').addEventListener('click', ()=>{
+      saveCurrent(); if(stepIndex>0){ stepIndex--; renderStepContent(); updatePreview(); }
+    });
+    document.getElementById('nextBtn').addEventListener('click', ()=>{
+      saveCurrent(); const qs = Q[lang]; if(stepIndex < qs.length -1){ stepIndex++; renderStepContent(); updatePreview(); } else { finish(); }
+    });
+
+    function saveCurrent(){
+      const qs = Q[lang]; const q = qs[stepIndex]; const el = document.getElementById('currentAnswer');
+      if(!el) return;
+      if(q.type==='options'){
+        // value was set on answers by button click
+      } else {
+        answers[q.id] = el.value && el.value.trim ? el.value.trim() : el.value;
+      }
+    }
+
+    // Preview grid
+    function updatePreview(){
+      const age = parseInt(document.getElementById('inputAge').value) || 0;
+      const death = parseInt(document.getElementById('inputDeath').value) || 80;
+      const total = Math.max(1, death) * 52;
+      const lived = Math.max(0, age) * 52;
+      const grid = document.getElementById('gridPreview'); grid.innerHTML='';
+      for(let i=0;i<total;i++){
+        const c = document.createElement('div'); c.className='cell'+(i<lived? ' past':'')+(i===lived? ' now':''); grid.appendChild(c);
+      }
+      const percent = Math.round((lived/total)*100);
+      document.getElementById('quickPercent').textContent = percent + '%';
+      document.getElementById('quickLeft').textContent = Math.max(0,total - lived) + ' semaines restantes';
+    }
+
+    document.getElementById('inputAge').addEventListener('input', updatePreview);
+    document.getElementById('inputDeath').addEventListener('input', updatePreview);
+
+    // Finish and report
+    function finish(){
+      // ensure current saved
+      saveCurrent();
+      // compute
+      const name = document.getElementById('inputName').value || (lang==='fr'? 'Ami':'Friend');
+      const age = parseInt(document.getElementById('inputAge').value) || 0;
+      const death = parseInt(document.getElementById('inputDeath').value) || 80;
+      const total = death * 52; const lived = age * 52; const percent = Math.round((lived/total)*100);
+
+      // build summary analysis
+      const reg = answers['q_regret'] || '';
+      const loved = answers['q_loved'] || (lang==='fr'?'Je ne sais pas':'I don\'t know');
+      const dream = answers['q_dream'] || '';
+      const project = answers['q_project'] || '';
+      const pride = answers['q_pride'] || '';
+      const habit = answers['q_habit'] || '';
+      const commit = answers['q_commit'] || '';
+
+      // personalized message
+      let summary = '';
+      if(reg) summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `);
+      else summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
+
+      if(dream) summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.');
+      if(!dream) summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
+
+      // actions
+      const actions = [];
+      if(dream) actions.push(lang==='fr'? 'Ecris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.');
+      if(habit) actions.push((lang==='fr'? 'Mets en place : ':'Start: ') + habit);
+      else actions.push(lang==='fr'? 'Choisis une habitude simple (ex: marcher 20 min).' : 'Choose a simple habit (e.g. walk 20 min).');
+      if(commit) actions.push((lang==='fr'? 'Premier pas: ':'First step: ') + commit);
+      actions.push(lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.');
+
+      // final advice selection
+      const advPoolFr = [
+        "Vous avez encore du temps — agissez maintenant.",
+        "Les petits pas constants battent la motivation intermittente.",
+        "Parlez à une personne proche aujourd'hui — la connexion change tout.",
+        "1 habitude, 30 jours — testez et observez la différence."
+      ];
+      const advPoolEn = [
+        "You still have time — act now.",
+        "Small consistent steps beat intermittent motivation.",
+        "Talk to someone close today — connection matters.",
+        "One habit, 30 days — try it and observe the change."
+      ];
+      const adv = (lang==='fr'? advPoolFr:advPoolEn)[Math.floor(Math.random()*4)];
+
+      // assemble report
+      const reportEl = document.getElementById('reportContent');
+      reportEl.innerHTML = '';
+      const head = document.createElement('div'); head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p class='muted'>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '} ${lived} ${lang==='fr'? 'semaines (' : 'weeks ('}${percent}% )</p>`; reportEl.appendChild(head);
+
+      const summ = document.createElement('p'); summ.textContent = summary; reportEl.appendChild(summ);
+
+      const ul = document.createElement('ul'); actions.forEach(a=>{ const li=document.createElement('li'); li.textContent=a; ul.appendChild(li); }); reportEl.appendChild(ul);
+
+      document.getElementById('finalAdvice').textContent = adv;
+
+      // save snapshot locally
+      const snap = {date:new Date().toISOString(), name, lang, age, death, percent, answers};
+      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); arr.unshift(snap); localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20))); }catch(e){}
+
+      // show final report
+      document.getElementById('finalReport').style.display='block';
+      document.getElementById('finalReport').scrollIntoView({behavior:'smooth'});
+    }
+
+    // download JSON
+    document.getElementById('downloadJSON').addEventListener('click', ()=>{
+      const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]');
+      const blob = new Blob([JSON.stringify(arr[0]||{},null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='life_mirror_report.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('restart').addEventListener('click', ()=>{ location.reload(); });
+
+    // init
+    renderSideLabels(); setLang('fr'); updatePreview(); renderStepContent();
+  </script>
+</body>
+</html>
