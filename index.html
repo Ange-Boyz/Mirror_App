@@ -3,142 +3,722 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Life Mirror — Dark Blue Edition</title>
+  <title>Life Mirror — Réflexion sur le Temps</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
     :root{
-      --bg-0:#051026; --bg-1:#071a2b; --card:#071a3a; --muted:rgba(255,255,255,0.65);
-      --accent:#2b8eff; --accent-2:#60a5fa; --soft:#0b1220; --glass:rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.02);
+      --bg-0:#0a0e1a; 
+      --bg-1:#0f1420; 
+      --bg-2:#151b2b;
+      --card:#1a2234; 
+      --card-hover:#1f2740;
+      --muted:#8b93a8;
+      --text:#e8ecf4;
+      --accent:#3b82f6; 
+      --accent-dark:#2563eb;
+      --accent-light:#60a5fa;
+      --success:#10b981;
+      --glass:rgba(255,255,255,0.04);
+      --glass-border:rgba(255,255,255,0.08);
+      --shadow:rgba(0,0,0,0.5);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial;color:#e6eef6;background:linear-gradient(180deg,var(--bg-0),var(--bg-1));}
-    .wrap{max-width:900px;margin:28px auto;padding:20px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-    header h1{font-size:18px;margin:0}
-    header small{color:var(--muted)}
-
-    /* wizard layout */
-    .steps{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:12px}
-    .step{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--glass-2);color:var(--muted);font-weight:700}
-    .step.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 22px rgba(43,142,255,0.18);color:white}
-
-    .content{display:grid;grid-template-columns:1fr 320px;gap:16px}
-    @media(max-width:840px){.content{grid-template-columns:1fr}}
-
-    .main{padding:8px}
-    .side{padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border-radius:12px}
-
-    label{display:block;font-size:14px;margin-bottom:6px;color:var(--muted)}
-    input[type=text],input[type=number],textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-    textarea{min-height:90px}
-
-    .row{display:flex;gap:10px}
-    .row .col{flex:1}
-
-    .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
-    button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:white;cursor:pointer;font-weight:700}
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
-
-    .life-visual{overflow:auto;padding:10px;border-radius:10px;margin-top:12px}
-    .grid{display:grid;grid-template-columns:repeat(52,12px);gap:4px;align-items:center}
-    .cell{width:12px;height:10px;border-radius:3px;background:rgba(255,255,255,0.03)}
-    .cell.past{background:linear-gradient(90deg,#083154,#052838)}
-    .cell.now{outline:2px solid rgba(43,142,255,0.28)}
-
-    @media(max-width:720px){.grid{grid-template-columns:repeat(26,10px)}.cell{width:10px;height:8px}}
-
-    .question{animation:fadeSlide .35s ease}
-    @keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
-    .muted{color:var(--muted)}
-    .big{font-size:20px;font-weight:700}
-
-    /* report */
-    .report{margin-top:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px}
-    .advice{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px;border-radius:8px;color:white;margin-top:8px}
-
-    .lang-toggle{display:flex;gap:6px}
-    .lang-toggle button{padding:6px 8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
-    .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0}
-
-    footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+    
+    *{box-sizing:border-box; margin:0; padding:0;}
+    
+    html,body{
+      height:100%;
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color:var(--text);
+      background:var(--bg-0);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+    }
+    
+    body{
+      background: radial-gradient(ellipse at top, rgba(59,130,246,0.15), transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(16,185,129,0.08), transparent 50%),
+                  var(--bg-0);
+      min-height:100vh;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:8px; height:8px;}
+    ::-webkit-scrollbar-track{background:var(--bg-1);}
+    ::-webkit-scrollbar-thumb{background:var(--muted); border-radius:10px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+    
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:20px;
+    }
+    
+    /* Header with Logo */
+    .app-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:24px 32px;
+      background:var(--card);
+      border-radius:20px;
+      margin-bottom:24px;
+      border:1px solid var(--glass-border);
+      box-shadow:0 4px 24px var(--shadow);
+      backdrop-filter:blur(10px);
+      animation:slideDown 0.6s ease;
+    }
+    
+    @keyframes slideDown{
+      from{opacity:0; transform:translateY(-20px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+    
+    .logo-section{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+    
+    .logo{
+      width:56px;
+      height:56px;
+      background:linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      box-shadow:0 8px 32px rgba(59,130,246,0.3);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .logo::before{
+      content:'';
+      position:absolute;
+      width:100%;
+      height:100%;
+      background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+      animation:shine 3s infinite;
+    }
+    
+    @keyframes shine{
+      0%{transform:translateX(-100%) translateY(-100%) rotate(45deg);}
+      100%{transform:translateX(200%) translateY(200%) rotate(45deg);}
+    }
+    
+    .logo svg{
+      width:32px;
+      height:32px;
+      fill:white;
+      position:relative;
+      z-index:1;
+    }
+    
+    .title-group h1{
+      font-size:24px;
+      font-weight:800;
+      background:linear-gradient(135deg, var(--text), var(--accent-light));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:2px;
+    }
+    
+    .title-group p{
+      font-size:14px;
+      color:var(--muted);
+      font-weight:400;
+    }
+    
+    .lang-toggle{
+      display:flex;
+      gap:4px;
+      background:var(--bg-1);
+      padding:4px;
+      border-radius:12px;
+      border:1px solid var(--glass-border);
+    }
+    
+    .lang-toggle button{
+      padding:8px 16px;
+      border-radius:8px;
+      background:transparent;
+      border:0;
+      color:var(--muted);
+      cursor:pointer;
+      transition:all 0.3s ease;
+      font-weight:600;
+      font-size:14px;
+    }
+    
+    .lang-toggle button.active{
+      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color:white;
+      box-shadow:0 4px 12px rgba(59,130,246,0.3);
+    }
+    
+    .lang-toggle button:hover:not(.active){
+      background:var(--glass);
+      color:var(--text);
+    }
+    
+    /* Main Content */
+    .main-content{
+      display:grid;
+      grid-template-columns:1fr 380px;
+      gap:24px;
+      animation:fadeIn 0.6s ease 0.2s both;
+    }
+    
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(20px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+    
+    .card{
+      background:var(--card);
+      border-radius:20px;
+      padding:32px;
+      border:1px solid var(--glass-border);
+      box-shadow:0 8px 32px var(--shadow);
+      backdrop-filter:blur(10px);
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover{
+      box-shadow:0 12px 48px rgba(0,0,0,0.6);
+    }
+    
+    /* Progress Steps */
+    .steps{
+      display:flex;
+      gap:8px;
+      margin-bottom:32px;
+      overflow-x:auto;
+      padding:4px;
+      justify-content:center;
+    }
+    
+    .steps::-webkit-scrollbar{height:4px;}
+    
+    .step{
+      min-width:44px;
+      height:44px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:var(--bg-1);
+      color:var(--muted);
+      font-weight:700;
+      font-size:16px;
+      border:2px solid transparent;
+      transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor:pointer;
+      position:relative;
+    }
+    
+    .step:hover{
+      background:var(--bg-2);
+      transform:translateY(-2px);
+    }
+    
+    .step.active{
+      background:linear-gradient(135deg, var(--accent), var(--accent-light));
+      color:white;
+      border-color:var(--accent-light);
+      box-shadow:0 8px 24px rgba(59,130,246,0.4), 0 0 0 4px rgba(59,130,246,0.1);
+      transform:scale(1.1);
+    }
+    
+    .step.completed{
+      background:var(--success);
+      color:white;
+    }
+    
+    .step.completed::after{
+      content:'✓';
+      position:absolute;
+      font-size:18px;
+    }
+    
+    /* Question */
+    .question{
+      animation:fadeSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes fadeSlide{
+      from{opacity:0; transform:translateY(16px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+    
+    .question h3{
+      font-size:22px;
+      font-weight:700;
+      margin-bottom:20px;
+      color:var(--text);
+      line-height:1.4;
+    }
+    
+    /* Form Elements */
+    input[type=text],
+    input[type=number],
+    textarea,
+    select{
+      width:100%;
+      padding:14px 16px;
+      border-radius:12px;
+      border:2px solid var(--glass-border);
+      background:var(--bg-1);
+      color:var(--text);
+      font-size:15px;
+      font-family:inherit;
+      transition:all 0.3s ease;
+      outline:none;
+    }
+    
+    input:focus,
+    textarea:focus{
+      border-color:var(--accent);
+      background:var(--bg-2);
+      box-shadow:0 0 0 4px rgba(59,130,246,0.1);
+    }
+    
+    textarea{
+      min-height:120px;
+      resize:vertical;
+    }
+    
+    ::placeholder{
+      color:var(--muted);
+      opacity:0.6;
+    }
+    
+    /* Option Buttons */
+    .options-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+      gap:12px;
+    }
+    
+    .option-btn{
+      padding:14px 20px;
+      border-radius:12px;
+      border:2px solid var(--glass-border);
+      background:var(--bg-1);
+      color:var(--text);
+      cursor:pointer;
+      transition:all 0.3s ease;
+      font-weight:600;
+      font-size:15px;
+      text-align:center;
+    }
+    
+    .option-btn:hover{
+      background:var(--bg-2);
+      border-color:var(--accent);
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(59,130,246,0.2);
+    }
+    
+    .option-btn.active{
+      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-color:var(--accent-light);
+      color:white;
+      box-shadow:0 6px 20px rgba(59,130,246,0.4);
+    }
+    
+    /* Controls */
+    .controls{
+      display:flex;
+      gap:12px;
+      justify-content:flex-end;
+      margin-top:28px;
+      padding-top:28px;
+      border-top:1px solid var(--glass-border);
+    }
+    
+    button{
+      padding:14px 28px;
+      border-radius:12px;
+      border:0;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      font-family:inherit;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    
+    button:disabled{
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+    
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color:white;
+      box-shadow:0 4px 16px rgba(59,130,246,0.3);
+    }
+    
+    .btn-primary:hover:not(:disabled){
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(59,130,246,0.4);
+    }
+    
+    .btn-secondary{
+      background:var(--bg-1);
+      color:var(--text);
+      border:2px solid var(--glass-border);
+    }
+    
+    .btn-secondary:hover:not(:disabled){
+      background:var(--bg-2);
+      border-color:var(--accent);
+    }
+    
+    /* Sidebar */
+    .sidebar{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+    
+    .sidebar-section{
+      background:var(--bg-1);
+      padding:20px;
+      border-radius:16px;
+      border:1px solid var(--glass-border);
+    }
+    
+    .sidebar-section label{
+      display:block;
+      font-size:13px;
+      font-weight:600;
+      color:var(--muted);
+      margin-bottom:8px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    
+    /* Life Visual */
+    .life-visual{
+      padding:20px;
+      background:var(--bg-1);
+      border-radius:16px;
+      border:1px solid var(--glass-border);
+    }
+    
+    .life-visual-title{
+      font-size:13px;
+      font-weight:600;
+      color:var(--muted);
+      margin-bottom:16px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(52, 1fr);
+      gap:3px;
+      margin-top:12px;
+    }
+    
+    .cell{
+      aspect-ratio:1;
+      border-radius:2px;
+      background:var(--glass);
+      transition:all 0.2s ease;
+    }
+    
+    .cell.past{
+      background:linear-gradient(135deg, #1e40af, #1e3a8a);
+      box-shadow:0 0 4px rgba(30,64,175,0.3);
+    }
+    
+    .cell.now{
+      background:linear-gradient(135deg, var(--accent), var(--accent-light));
+      box-shadow:0 0 8px rgba(59,130,246,0.6);
+      animation:pulse 2s infinite;
+    }
+    
+    @keyframes pulse{
+      0%, 100%{transform:scale(1); opacity:1;}
+      50%{transform:scale(1.2); opacity:0.8;}
+    }
+    
+    /* Stats */
+    .stats{
+      padding:20px;
+      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-radius:16px;
+      text-align:center;
+      box-shadow:0 8px 24px rgba(59,130,246,0.3);
+    }
+    
+    .stats-value{
+      font-size:48px;
+      font-weight:800;
+      color:white;
+      margin-bottom:4px;
+      line-height:1;
+    }
+    
+    .stats-label{
+      font-size:14px;
+      color:rgba(255,255,255,0.8);
+      font-weight:500;
+    }
+    
+    .stats-detail{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,0.2);
+      font-size:13px;
+      color:rgba(255,255,255,0.9);
+    }
+    
+    /* Report */
+    .report-card{
+      margin-top:24px;
+      animation:fadeIn 0.6s ease;
+    }
+    
+    .report-card h2{
+      font-size:28px;
+      font-weight:800;
+      margin-bottom:24px;
+      background:linear-gradient(135deg, var(--text), var(--accent-light));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    
+    .report-content{
+      background:var(--bg-1);
+      padding:24px;
+      border-radius:16px;
+      margin-bottom:20px;
+      border:1px solid var(--glass-border);
+    }
+    
+    .report-content strong{
+      color:var(--accent-light);
+      font-size:18px;
+    }
+    
+    .report-content p{
+      margin:12px 0;
+      color:var(--muted);
+      line-height:1.8;
+    }
+    
+    .report-content ul{
+      list-style:none;
+      padding:0;
+      margin-top:16px;
+    }
+    
+    .report-content li{
+      padding:12px 16px;
+      background:var(--bg-2);
+      border-radius:10px;
+      margin-bottom:8px;
+      border-left:3px solid var(--accent);
+      transition:all 0.3s ease;
+    }
+    
+    .report-content li:hover{
+      background:var(--card-hover);
+      transform:translateX(4px);
+    }
+    
+    .advice{
+      background:linear-gradient(135deg, var(--success), #059669);
+      padding:20px 24px;
+      border-radius:16px;
+      color:white;
+      font-weight:600;
+      font-size:16px;
+      box-shadow:0 8px 24px rgba(16,185,129,0.3);
+      margin-bottom:20px;
+      line-height:1.6;
+    }
+    
+    /* Footer */
+    footer{
+      margin-top:40px;
+      padding:20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      opacity:0.8;
+    }
+    
+    /* Responsive */
+    @media(max-width:1024px){
+      .main-content{
+        grid-template-columns:1fr;
+      }
+      
+      .sidebar{
+        order:-1;
+      }
+      
+      .grid{
+        grid-template-columns:repeat(26, 1fr);
+      }
+    }
+    
+    @media(max-width:640px){
+      .container{
+        padding:12px;
+      }
+      
+      .app-header{
+        padding:16px 20px;
+        flex-direction:column;
+        gap:16px;
+        text-align:center;
+      }
+      
+      .logo-section{
+        flex-direction:column;
+      }
+      
+      .card{
+        padding:20px;
+      }
+      
+      .title-group h1{
+        font-size:20px;
+      }
+      
+      .question h3{
+        font-size:18px;
+      }
+      
+      .steps{
+        gap:6px;
+        justify-content:flex-start;
+      }
+      
+      .step{
+        min-width:36px;
+        height:36px;
+        font-size:14px;
+      }
+      
+      .options-grid{
+        grid-template-columns:1fr;
+      }
+      
+      .controls{
+        flex-direction:column-reverse;
+      }
+      
+      .controls button{
+        width:100%;
+        justify-content:center;
+      }
+      
+      .stats-value{
+        font-size:36px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="card">
-      <div>
-        <h1>Life Mirror — Dark Blue</h1>
-        <small>Un outil introspectif pour te donner conscience du temps.</small>
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-section">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+          </svg>
+        </div>
+        <div class="title-group">
+          <h1>Life Mirror</h1>
+          <p>Un outil introspectif pour te donner conscience du temps</p>
+        </div>
       </div>
-      <div class="lang-toggle" aria-hidden>
+      <div class="lang-toggle">
         <button id="langFr" class="active">FR</button>
         <button id="langEn">EN</button>
       </div>
     </header>
 
-    <div class="card content">
-      <div class="main">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Questions Panel -->
+      <div class="card">
         <div class="steps" id="steps"></div>
-
-        <div id="stepContent">
-          <!-- dynamic question content goes here -->
-        </div>
-
+        <div id="stepContent"></div>
         <div class="controls">
-          <button id="prevBtn" class="ghost">Précédent</button>
-          <button id="nextBtn">Suivant</button>
+          <button id="prevBtn" class="btn-secondary" disabled>
+            <span>←</span> <span id="prevText">Précédent</span>
+          </button>
+          <button id="nextBtn" class="btn-primary">
+            <span id="nextText">Suivant</span> <span>→</span>
+          </button>
         </div>
       </div>
 
-      <aside class="side">
-        <div class="row">
-          <div class="col">
-            <label id="lblName">Nom</label>
-            <input id="inputName" type="text" placeholder="Ex: Ange" />
-          </div>
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <label id="lblName">Nom</label>
+          <input id="inputName" type="text" placeholder="Ex: Ange" />
         </div>
 
-        <div style="margin-top:8px">
+        <div class="sidebar-section">
           <label id="lblAge">Âge actuel</label>
           <input id="inputAge" type="number" min="0" max="130" value="20" />
         </div>
 
-        <div style="margin-top:8px">
+        <div class="sidebar-section">
           <label id="lblDeath">Âge estimé pour mourir</label>
           <input id="inputDeath" type="number" min="1" max="140" value="80" />
         </div>
 
-        <div class="life-visual" id="lifePreview">
-          <div class="muted">Aperçu de la vie</div>
+        <div class="stats">
+          <div class="stats-value" id="quickPercent">0%</div>
+          <div class="stats-label" id="statsLabel">de ta vie vécue</div>
+          <div class="stats-detail" id="quickLeft">0 semaines restantes</div>
+        </div>
+
+        <div class="life-visual">
+          <div class="life-visual-title" id="visualTitle">Aperçu de la vie</div>
           <div class="grid" id="gridPreview"></div>
         </div>
-
-        <div style="margin-top:10px">
-          <div class="muted">Résumé rapide</div>
-          <div class="big" id="quickPercent">0%</div>
-          <div class="muted" id="quickLeft">0 semaines restantes</div>
-        </div>
-
-      </aside>
-    </div>
-
-    <div id="finalReport" class="card" style="display:none;margin-top:12px">
-      <h2>Rapport & Conseils</h2>
-      <div id="reportContent"></div>
-      <div class="advice" id="finalAdvice"></div>
-      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
-        <button id="downloadJSON" class="ghost">Télécharger le rapport</button>
-        <button id="restart">Recommencer</button>
       </div>
     </div>
 
-    <footer>Prototype — usage personnel. Tes réponses sont stockées localement dans le navigateur si tu veux revenir.</footer>
+    <!-- Final Report -->
+    <div id="finalReport" class="card report-card" style="display:none">
+      <h2 id="reportTitle">Rapport & Conseils</h2>
+      <div class="report-content" id="reportContent"></div>
+      <div class="advice" id="finalAdvice"></div>
+      <div class="controls">
+        <button id="downloadJSON" class="btn-secondary">
+          💾 <span id="downloadText">Télécharger</span>
+        </button>
+        <button id="restart" class="btn-primary">
+          🔄 <span id="restartText">Recommencer</span>
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Life Mirror • Tes réponses sont stockées localement dans ton navigateur</p>
+    </footer>
   </div>
 
   <script>
-    // Questions list (FR / EN)
+    // Questions
     const Q = {
       fr: [
         {id:'q_regret', title:"Si tu mourais cette année, quel serait ton plus grand regret ?", type:'textarea', placeholder:'Ex: Ne pas avoir essayé mon projet'},
@@ -148,165 +728,255 @@
         {id:'q_project', title:"Si tu avais 5 ans à vivre, quel projet commencerais-tu demain ?", type:'textarea'},
         {id:'q_pride', title:"Es-tu fier(e) de la personne que tu deviens ?", type:'options', options:['Oui','Presque','Pas vraiment','Pas du tout']},
         {id:'q_health', title:"Comment te sens-tu physiquement ces derniers mois ?", type:'textarea'},
-        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ? (ex: marcher 20min)", type:'text'},
+        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ?", type:'text', placeholder:'Ex: marcher 20 min par jour'},
         {id:'q_fear', title:"Qu'est-ce qui te fait le plus peur dans la vie aujourd'hui ?", type:'textarea'},
         {id:'q_commit', title:"En 1 phrase : Quel est le premier petit pas que tu peux faire demain ?", type:'text', placeholder:'Ex: écrire 15 min sur mon projet'}
       ],
       en: [
         {id:'q_regret', title:"If you died this year, what would be your biggest regret?", type:'textarea', placeholder:'E.g. Not trying my project'},
         {id:'q_loved', title:"Do you have people who truly love you today?", type:'options', options:['Yes','Somewhat','I don\'t know','No']},
-        {id:'q_last_thanks', title:"When did you last say 'thank you' or 'I love you' to someone?", type:'text', placeholder:'E.g. Yesterday, a week ago...'},
+        {id:'q_last_thanks', title:"When did you last say 'thank you' or 'I love you'?", type:'text', placeholder:'E.g. Yesterday, a week ago...'},
         {id:'q_dream', title:"Do you have a dream you've been postponing? Which one?", type:'textarea'},
         {id:'q_project', title:"If you had 5 years to live, which project would you start tomorrow?", type:'textarea'},
         {id:'q_pride', title:"Are you proud of who you are becoming?", type:'options', options:['Yes','Almost','Not really','Not at all']},
         {id:'q_health', title:"How have you been feeling physically these past months?", type:'textarea'},
-        {id:'q_habit', title:"Which simple habit could improve your life? (e.g. walk 20min)", type:'text'},
+        {id:'q_habit', title:"Which simple habit could improve your life?", type:'text', placeholder:'E.g. walk 20 min daily'},
         {id:'q_fear', title:"What scares you most in life today?", type:'textarea'},
-        {id:'q_commit', title:"In one sentence: What is the first small step you can take tomorrow?", type:'text', placeholder:'E.g. write 15 minutes about my idea'}
+        {id:'q_commit', title:"In one sentence: What's the first small step you can take tomorrow?", type:'text', placeholder:'E.g. write 15 minutes about my idea'}
       ]
     };
 
-    // State
     let lang = 'fr';
     let stepIndex = 0;
     let answers = {};
+    let completedSteps = new Set();
 
     const langFr = document.getElementById('langFr');
     const langEn = document.getElementById('langEn');
 
     function setLang(l){
-      lang = l; if(l==='fr'){langFr.classList.add('active');langEn.classList.remove('active')}else{langEn.classList.add('active');langFr.classList.remove('active')}
-      renderSteps(); renderStepContent(); renderSideLabels(); updatePreview();
+      lang = l;
+      if(l==='fr'){
+        langFr.classList.add('active');
+        langEn.classList.remove('active');
+      }else{
+        langEn.classList.add('active');
+        langFr.classList.remove('active');
+      }
+      updateTexts();
+      renderSteps();
+      renderStepContent();
+      updatePreview();
     }
-    langFr.addEventListener('click', ()=>setLang('fr'));
-    langEn.addEventListener('click', ()=>setLang('en'));
 
-    // Steps UI
-    function renderSteps(){
-      const stepsEl = document.getElementById('steps'); stepsEl.innerHTML='';
-      const qs = Q[lang];
-      for(let i=0;i<qs.length;i++){
-        const s = document.createElement('div'); s.className='step'+(i===stepIndex? ' active':''); s.textContent = i+1; stepsEl.appendChild(s);
+    function updateTexts(){
+      if(lang === 'fr'){
+        document.getElementById('lblName').textContent = 'Nom';
+        document.getElementById('lblAge').textContent = 'Âge actuel';
+        document.getElementById('lblDeath').textContent = 'Âge estimé pour mourir';
+        document.getElementById('inputName').placeholder = 'Ex: Ange';
+        document.getElementById('prevText').textContent = 'Précédent';
+        document.getElementById('nextText').textContent = 'Suivant';
+        document.getElementById('visualTitle').textContent = 'Aperçu de la vie';
+        document.getElementById('statsLabel').textContent = 'de ta vie vécue';
+        document.getElementById('reportTitle').textContent = 'Rapport & Conseils';
+        document.getElementById('downloadText').textContent = 'Télécharger';
+        document.getElementById('restartText').textContent = 'Recommencer';
+      }else{
+        document.getElementById('lblName').textContent = 'Name';
+        document.getElementById('lblAge').textContent = 'Your Age';
+        document.getElementById('lblDeath').textContent = 'Expected age of death';
+        document.getElementById('inputName').placeholder = 'E.g. John';
+        document.getElementById('prevText').textContent = 'Previous';
+        document.getElementById('nextText').textContent = 'Next';
+        document.getElementById('visualTitle').textContent = 'Life Preview';
+        document.getElementById('statsLabel').textContent = 'of your life lived';
+        document.getElementById('reportTitle').textContent = 'Report & Advice';
+        document.getElementById('downloadText').textContent = 'Download';
+        document.getElementById('restartText').textContent = 'Restart';
       }
     }
 
-    // Side labels
-    function renderSideLabels(){
-      document.getElementById('lblName').textContent = (lang==='fr'?'Nom':'Name');
-      document.getElementById('lblAge').textContent = (lang==='fr'?'Âge actuel':'Your Age');
-      document.getElementById('lblDeath').textContent = (lang==='fr'?'Âge estimé pour mourir':'Expected age of death');
-      document.getElementById('inputName').placeholder = (lang==='fr'?'Ex: Ange':'Ex: John');
+    langFr.addEventListener('click', ()=>setLang('fr'));
+    langEn.addEventListener('click', ()=>setLang('en'));
+
+    function renderSteps(){
+      const stepsEl = document.getElementById('steps');
+      stepsEl.innerHTML='';
+      const qs = Q[lang];
+      for(let i=0; i<qs.length; i++){
+        const s = document.createElement('div');
+        s.className = 'step';
+        if(i === stepIndex) s.classList.add('active');
+        if(completedSteps.has(i)) s.classList.add('completed');
+        s.textContent = completedSteps.has(i) ? '' : (i+1);
+        stepsEl.appendChild(s);
+      }
     }
 
-    // Step content
     function renderStepContent(){
-      const container = document.getElementById('stepContent'); container.innerHTML='';
+      const container = document.getElementById('stepContent');
+      container.innerHTML='';
       const qs = Q[lang];
       const q = qs[stepIndex];
 
-      const wrapper = document.createElement('div'); wrapper.className='question';
-      const title = document.createElement('h3'); title.textContent = q.title; title.style.marginBottom='10px'; wrapper.appendChild(title);
+      const wrapper = document.createElement('div');
+      wrapper.className='question';
+      const title = document.createElement('h3');
+      title.textContent = q.title;
+      wrapper.appendChild(title);
 
       let input;
       if(q.type==='textarea'){
-        input = document.createElement('textarea'); input.id='currentAnswer'; input.placeholder = q.placeholder || '';
+        input = document.createElement('textarea');
+        input.id='currentAnswer';
+        input.placeholder = q.placeholder || '';
         input.value = answers[q.id] || '';
       } else if(q.type==='options'){
-        input = document.createElement('div'); input.id='currentAnswer'; input.style.display='flex'; input.style.gap='8px';
+        input = document.createElement('div');
+        input.id='currentAnswer';
+        input.className='options-grid';
         q.options.forEach(opt => {
-          const b = document.createElement('button'); b.type='button'; b.className='ghost'; b.textContent = opt; b.style.flex='1';
-          if(answers[q.id] === opt) b.classList.add('activeOption');
-          b.addEventListener('click', ()=>{ answers[q.id]=opt; // visual
-            Array.from(input.querySelectorAll('button')).forEach(x=>x.classList.remove('activeOption'));
-            b.classList.add('activeOption');
+          const b = document.createElement('button');
+          b.type='button';
+          b.className='option-btn';
+          b.textContent = opt;
+          if(answers[q.id] === opt) b.classList.add('active');
+          b.addEventListener('click', ()=>{
+            answers[q.id]=opt;
+            Array.from(input.querySelectorAll('button')).forEach(x=>x.classList.remove('active'));
+            b.classList.add('active');
           });
           input.appendChild(b);
         });
       } else {
-        input = document.createElement('input'); input.type = q.type==='number'?'number':'text'; input.id='currentAnswer'; input.placeholder = q.placeholder || '';
+        input = document.createElement('input');
+        input.type = q.type==='number'?'number':'text';
+        input.id='currentAnswer';
+        input.placeholder = q.placeholder || '';
         input.value = answers[q.id] || '';
       }
 
       wrapper.appendChild(input);
       container.appendChild(wrapper);
 
-      // accessibility: focus
-      setTimeout(()=>{ const el = document.getElementById('currentAnswer'); if(el) el.focus(); },50);
+      setTimeout(()=>{
+        const el = document.getElementById('currentAnswer');
+        if(el && el.focus) el.focus();
+      },50);
+      
+      updateControls();
       renderSteps();
     }
 
-    // Prev / Next
+    function updateControls(){
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const qs = Q[lang];
+      
+      prevBtn.disabled = stepIndex === 0;
+      
+      if(stepIndex === qs.length - 1){
+        nextBtn.querySelector('span:last-child').textContent = lang==='fr'?'Terminer ✓':'Finish ✓';
+      }else{
+        nextBtn.querySelector('span:last-child').textContent = '→';
+      }
+    }
+
     document.getElementById('prevBtn').addEventListener('click', ()=>{
-      saveCurrent(); if(stepIndex>0){ stepIndex--; renderStepContent(); updatePreview(); }
+      saveCurrent();
+      if(stepIndex>0){
+        stepIndex--;
+        renderStepContent();
+        updatePreview();
+      }
     });
+
     document.getElementById('nextBtn').addEventListener('click', ()=>{
-      saveCurrent(); const qs = Q[lang]; if(stepIndex < qs.length -1){ stepIndex++; renderStepContent(); updatePreview(); } else { finish(); }
+      saveCurrent();
+      completedSteps.add(stepIndex);
+      const qs = Q[lang];
+      if(stepIndex < qs.length -1){
+        stepIndex++;
+        renderStepContent();
+        updatePreview();
+      } else {
+        finish();
+      }
     });
 
     function saveCurrent(){
-      const qs = Q[lang]; const q = qs[stepIndex]; const el = document.getElementById('currentAnswer');
+      const qs = Q[lang];
+      const q = qs[stepIndex];
+      const el = document.getElementById('currentAnswer');
       if(!el) return;
       if(q.type==='options'){
-        // value was set on answers by button click
+        // already set
       } else {
         answers[q.id] = el.value && el.value.trim ? el.value.trim() : el.value;
       }
     }
 
-    // Preview grid
     function updatePreview(){
       const age = parseInt(document.getElementById('inputAge').value) || 0;
       const death = parseInt(document.getElementById('inputDeath').value) || 80;
       const total = Math.max(1, death) * 52;
       const lived = Math.max(0, age) * 52;
-      const grid = document.getElementById('gridPreview'); grid.innerHTML='';
-      for(let i=0;i<total;i++){
-        const c = document.createElement('div'); c.className='cell'+(i<lived? ' past':'')+(i===lived? ' now':''); grid.appendChild(c);
+      const grid = document.getElementById('gridPreview');
+      grid.innerHTML='';
+      for(let i=0; i<total; i++){
+        const c = document.createElement('div');
+        c.className='cell';
+        if(i<lived) c.classList.add('past');
+        if(i===lived) c.classList.add('now');
+        grid.appendChild(c);
       }
       const percent = Math.round((lived/total)*100);
       document.getElementById('quickPercent').textContent = percent + '%';
-      document.getElementById('quickLeft').textContent = Math.max(0,total - lived) + ' semaines restantes';
+      const weeksLeft = Math.max(0,total - lived);
+      document.getElementById('quickLeft').textContent = weeksLeft + (lang==='fr'?' semaines restantes':' weeks remaining');
     }
 
     document.getElementById('inputAge').addEventListener('input', updatePreview);
     document.getElementById('inputDeath').addEventListener('input', updatePreview);
 
-    // Finish and report
     function finish(){
-      // ensure current saved
       saveCurrent();
-      // compute
       const name = document.getElementById('inputName').value || (lang==='fr'? 'Ami':'Friend');
       const age = parseInt(document.getElementById('inputAge').value) || 0;
       const death = parseInt(document.getElementById('inputDeath').value) || 80;
-      const total = death * 52; const lived = age * 52; const percent = Math.round((lived/total)*100);
+      const total = death * 52;
+      const lived = age * 52;
+      const percent = Math.round((lived/total)*100);
 
-      // build summary analysis
       const reg = answers['q_regret'] || '';
-      const loved = answers['q_loved'] || (lang==='fr'?'Je ne sais pas':'I don\'t know');
+      const loved = answers['q_loved'] || '';
       const dream = answers['q_dream'] || '';
       const project = answers['q_project'] || '';
       const pride = answers['q_pride'] || '';
       const habit = answers['q_habit'] || '';
       const commit = answers['q_commit'] || '';
 
-      // personalized message
       let summary = '';
-      if(reg) summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `);
-      else summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
+      if(reg){
+        summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `);
+      }else{
+        summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
+      }
 
-      if(dream) summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.');
-      if(!dream) summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
+      if(dream){
+        summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.');
+      }else{
+        summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
+      }
 
-      // actions
       const actions = [];
-      if(dream) actions.push(lang==='fr'? 'Ecris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.');
+      if(dream) actions.push(lang==='fr'? 'Écris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.');
       if(habit) actions.push((lang==='fr'? 'Mets en place : ':'Start: ') + habit);
       else actions.push(lang==='fr'? 'Choisis une habitude simple (ex: marcher 20 min).' : 'Choose a simple habit (e.g. walk 20 min).');
       if(commit) actions.push((lang==='fr'? 'Premier pas: ':'First step: ') + commit);
       actions.push(lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.');
 
-      // final advice selection
       const advPoolFr = [
         "Vous avez encore du temps — agissez maintenant.",
         "Les petits pas constants battent la motivation intermittente.",
@@ -321,37 +991,57 @@
       ];
       const adv = (lang==='fr'? advPoolFr:advPoolEn)[Math.floor(Math.random()*4)];
 
-      // assemble report
       const reportEl = document.getElementById('reportContent');
       reportEl.innerHTML = '';
-      const head = document.createElement('div'); head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p class='muted'>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '} ${lived} ${lang==='fr'? 'semaines (' : 'weeks ('}${percent}% )</p>`; reportEl.appendChild(head);
+      const head = document.createElement('div');
+      head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '} ${lived} ${lang==='fr'? 'semaines (' : 'weeks ('}${percent}% )</p>`;
+      reportEl.appendChild(head);
 
-      const summ = document.createElement('p'); summ.textContent = summary; reportEl.appendChild(summ);
+      const summ = document.createElement('p');
+      summ.textContent = summary;
+      reportEl.appendChild(summ);
 
-      const ul = document.createElement('ul'); actions.forEach(a=>{ const li=document.createElement('li'); li.textContent=a; ul.appendChild(li); }); reportEl.appendChild(ul);
+      const ul = document.createElement('ul');
+      actions.forEach(a=>{
+        const li=document.createElement('li');
+        li.textContent=a;
+        ul.appendChild(li);
+      });
+      reportEl.appendChild(ul);
 
       document.getElementById('finalAdvice').textContent = adv;
 
-      // save snapshot locally
       const snap = {date:new Date().toISOString(), name, lang, age, death, percent, answers};
-      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); arr.unshift(snap); localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20))); }catch(e){}
+      try{
+        const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]');
+        arr.unshift(snap);
+        localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20)));
+      }catch(e){}
 
-      // show final report
       document.getElementById('finalReport').style.display='block';
       document.getElementById('finalReport').scrollIntoView({behavior:'smooth'});
     }
 
-    // download JSON
     document.getElementById('downloadJSON').addEventListener('click', ()=>{
       const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]');
       const blob = new Blob([JSON.stringify(arr[0]||{},null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='life_mirror_report.json'; a.click(); URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='life_mirror_report.json';
+      a.click();
+      URL.revokeObjectURL(url);
     });
 
-    document.getElementById('restart').addEventListener('click', ()=>{ location.reload(); });
+    document.getElementById('restart').addEventListener('click', ()=>{
+      location.reload();
+    });
 
-    // init
-    renderSideLabels(); setLang('fr'); updatePreview(); renderStepContent();
+    // Initialize
+    updateTexts();
+    setLang('fr');
+    updatePreview();
+    renderStepContent();
   </script>
 </body>
 </html>
