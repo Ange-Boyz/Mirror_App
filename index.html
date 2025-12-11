@@ -2,723 +2,191 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#071428" />
   <title>Life Mirror — Réflexion sur le Temps</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
+    /* ---------------------------------------------
+       Life Mirror — Responsive, mobile-first
+       Improvements: accessibility, touch targets, fluid grid,
+       reduced visual noise on small screens, keyboard support
+       ----------------------------------------------*/
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
     :root{
-      --bg-0:#0a0e1a; 
-      --bg-1:#0f1420; 
-      --bg-2:#151b2b;
-      --card:#1a2234; 
-      --card-hover:#1f2740;
-      --muted:#8b93a8;
-      --text:#e8ecf4;
-      --accent:#3b82f6; 
-      --accent-dark:#2563eb;
-      --accent-light:#60a5fa;
-      --success:#10b981;
-      --glass:rgba(255,255,255,0.04);
-      --glass-border:rgba(255,255,255,0.08);
-      --shadow:rgba(0,0,0,0.5);
-    }
-    
-    *{box-sizing:border-box; margin:0; padding:0;}
-    
-    html,body{
-      height:100%;
-      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color:var(--text);
-      background:var(--bg-0);
-      line-height:1.6;
-      -webkit-font-smoothing:antialiased;
-    }
-    
-    body{
-      background: radial-gradient(ellipse at top, rgba(59,130,246,0.15), transparent 50%),
-                  radial-gradient(ellipse at bottom right, rgba(16,185,129,0.08), transparent 50%),
-                  var(--bg-0);
-      min-height:100vh;
-    }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar{width:8px; height:8px;}
-    ::-webkit-scrollbar-track{background:var(--bg-1);}
-    ::-webkit-scrollbar-thumb{background:var(--muted); border-radius:10px;}
-    ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
-    
-    .container{
-      max-width:1200px;
-      margin:0 auto;
-      padding:20px;
-    }
-    
-    /* Header with Logo */
-    .app-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:24px 32px;
-      background:var(--card);
-      border-radius:20px;
-      margin-bottom:24px;
-      border:1px solid var(--glass-border);
-      box-shadow:0 4px 24px var(--shadow);
-      backdrop-filter:blur(10px);
-      animation:slideDown 0.6s ease;
-    }
-    
-    @keyframes slideDown{
-      from{opacity:0; transform:translateY(-20px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-    
-    .logo-section{
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
-    
-    .logo{
-      width:56px;
-      height:56px;
-      background:linear-gradient(135deg, var(--accent), var(--accent-light));
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      box-shadow:0 8px 32px rgba(59,130,246,0.3);
-      position:relative;
-      overflow:hidden;
-    }
-    
-    .logo::before{
-      content:'';
-      position:absolute;
-      width:100%;
-      height:100%;
-      background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
-      animation:shine 3s infinite;
-    }
-    
-    @keyframes shine{
-      0%{transform:translateX(-100%) translateY(-100%) rotate(45deg);}
-      100%{transform:translateX(200%) translateY(200%) rotate(45deg);}
-    }
-    
-    .logo svg{
-      width:32px;
-      height:32px;
-      fill:white;
-      position:relative;
-      z-index:1;
-    }
-    
-    .title-group h1{
-      font-size:24px;
-      font-weight:800;
-      background:linear-gradient(135deg, var(--text), var(--accent-light));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-      margin-bottom:2px;
-    }
-    
-    .title-group p{
-      font-size:14px;
-      color:var(--muted);
-      font-weight:400;
-    }
-    
-    .lang-toggle{
-      display:flex;
-      gap:4px;
-      background:var(--bg-1);
-      padding:4px;
-      border-radius:12px;
-      border:1px solid var(--glass-border);
-    }
-    
-    .lang-toggle button{
-      padding:8px 16px;
-      border-radius:8px;
-      background:transparent;
-      border:0;
-      color:var(--muted);
-      cursor:pointer;
-      transition:all 0.3s ease;
-      font-weight:600;
-      font-size:14px;
-    }
-    
-    .lang-toggle button.active{
-      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color:white;
-      box-shadow:0 4px 12px rgba(59,130,246,0.3);
-    }
-    
-    .lang-toggle button:hover:not(.active){
-      background:var(--glass);
-      color:var(--text);
-    }
-    
-    /* Main Content */
-    .main-content{
-      display:grid;
-      grid-template-columns:1fr 380px;
-      gap:24px;
-      animation:fadeIn 0.6s ease 0.2s both;
-    }
-    
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(20px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-    
-    .card{
-      background:var(--card);
-      border-radius:20px;
-      padding:32px;
-      border:1px solid var(--glass-border);
-      box-shadow:0 8px 32px var(--shadow);
-      backdrop-filter:blur(10px);
-      transition:transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .card:hover{
-      box-shadow:0 12px 48px rgba(0,0,0,0.6);
-    }
-    
-    /* Progress Steps */
-    .steps{
-      display:flex;
-      gap:8px;
-      margin-bottom:32px;
-      overflow-x:auto;
-      padding:4px;
-      justify-content:center;
-    }
-    
-    .steps::-webkit-scrollbar{height:4px;}
-    
-    .step{
-      min-width:44px;
-      height:44px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      background:var(--bg-1);
-      color:var(--muted);
-      font-weight:700;
-      font-size:16px;
-      border:2px solid transparent;
-      transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor:pointer;
-      position:relative;
-    }
-    
-    .step:hover{
-      background:var(--bg-2);
-      transform:translateY(-2px);
-    }
-    
-    .step.active{
-      background:linear-gradient(135deg, var(--accent), var(--accent-light));
-      color:white;
-      border-color:var(--accent-light);
-      box-shadow:0 8px 24px rgba(59,130,246,0.4), 0 0 0 4px rgba(59,130,246,0.1);
-      transform:scale(1.1);
-    }
-    
-    .step.completed{
-      background:var(--success);
-      color:white;
-    }
-    
-    .step.completed::after{
-      content:'✓';
-      position:absolute;
-      font-size:18px;
-    }
-    
-    /* Question */
-    .question{
-      animation:fadeSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    @keyframes fadeSlide{
-      from{opacity:0; transform:translateY(16px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-    
-    .question h3{
-      font-size:22px;
-      font-weight:700;
-      margin-bottom:20px;
-      color:var(--text);
-      line-height:1.4;
-    }
-    
-    /* Form Elements */
-    input[type=text],
-    input[type=number],
-    textarea,
-    select{
-      width:100%;
-      padding:14px 16px;
-      border-radius:12px;
-      border:2px solid var(--glass-border);
-      background:var(--bg-1);
-      color:var(--text);
-      font-size:15px;
-      font-family:inherit;
-      transition:all 0.3s ease;
-      outline:none;
-    }
-    
-    input:focus,
-    textarea:focus{
-      border-color:var(--accent);
-      background:var(--bg-2);
-      box-shadow:0 0 0 4px rgba(59,130,246,0.1);
-    }
-    
-    textarea{
-      min-height:120px;
-      resize:vertical;
-    }
-    
-    ::placeholder{
-      color:var(--muted);
-      opacity:0.6;
-    }
-    
-    /* Option Buttons */
-    .options-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-      gap:12px;
-    }
-    
-    .option-btn{
-      padding:14px 20px;
-      border-radius:12px;
-      border:2px solid var(--glass-border);
-      background:var(--bg-1);
-      color:var(--text);
-      cursor:pointer;
-      transition:all 0.3s ease;
-      font-weight:600;
-      font-size:15px;
-      text-align:center;
-    }
-    
-    .option-btn:hover{
-      background:var(--bg-2);
-      border-color:var(--accent);
-      transform:translateY(-2px);
-      box-shadow:0 4px 12px rgba(59,130,246,0.2);
-    }
-    
-    .option-btn.active{
-      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-      border-color:var(--accent-light);
-      color:white;
-      box-shadow:0 6px 20px rgba(59,130,246,0.4);
-    }
-    
-    /* Controls */
-    .controls{
-      display:flex;
-      gap:12px;
-      justify-content:flex-end;
-      margin-top:28px;
-      padding-top:28px;
-      border-top:1px solid var(--glass-border);
-    }
-    
-    button{
-      padding:14px 28px;
-      border-radius:12px;
-      border:0;
-      font-weight:700;
-      font-size:15px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      font-family:inherit;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    
-    button:disabled{
-      opacity:0.5;
-      cursor:not-allowed;
-    }
-    
-    .btn-primary{
-      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color:white;
-      box-shadow:0 4px 16px rgba(59,130,246,0.3);
-    }
-    
-    .btn-primary:hover:not(:disabled){
-      transform:translateY(-2px);
-      box-shadow:0 8px 24px rgba(59,130,246,0.4);
-    }
-    
-    .btn-secondary{
-      background:var(--bg-1);
-      color:var(--text);
-      border:2px solid var(--glass-border);
-    }
-    
-    .btn-secondary:hover:not(:disabled){
-      background:var(--bg-2);
-      border-color:var(--accent);
-    }
-    
-    /* Sidebar */
-    .sidebar{
-      display:flex;
-      flex-direction:column;
-      gap:20px;
-    }
-    
-    .sidebar-section{
-      background:var(--bg-1);
-      padding:20px;
-      border-radius:16px;
-      border:1px solid var(--glass-border);
-    }
-    
-    .sidebar-section label{
-      display:block;
-      font-size:13px;
-      font-weight:600;
-      color:var(--muted);
-      margin-bottom:8px;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
-    }
-    
-    /* Life Visual */
-    .life-visual{
-      padding:20px;
-      background:var(--bg-1);
-      border-radius:16px;
-      border:1px solid var(--glass-border);
-    }
-    
-    .life-visual-title{
-      font-size:13px;
-      font-weight:600;
-      color:var(--muted);
-      margin-bottom:16px;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
-    }
-    
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(52, 1fr);
-      gap:3px;
-      margin-top:12px;
-    }
-    
-    .cell{
-      aspect-ratio:1;
-      border-radius:2px;
-      background:var(--glass);
-      transition:all 0.2s ease;
-    }
-    
-    .cell.past{
-      background:linear-gradient(135deg, #1e40af, #1e3a8a);
-      box-shadow:0 0 4px rgba(30,64,175,0.3);
-    }
-    
-    .cell.now{
-      background:linear-gradient(135deg, var(--accent), var(--accent-light));
-      box-shadow:0 0 8px rgba(59,130,246,0.6);
-      animation:pulse 2s infinite;
-    }
-    
-    @keyframes pulse{
-      0%, 100%{transform:scale(1); opacity:1;}
-      50%{transform:scale(1.2); opacity:0.8;}
-    }
-    
-    /* Stats */
-    .stats{
-      padding:20px;
-      background:linear-gradient(135deg, var(--accent), var(--accent-dark));
-      border-radius:16px;
-      text-align:center;
-      box-shadow:0 8px 24px rgba(59,130,246,0.3);
-    }
-    
-    .stats-value{
-      font-size:48px;
-      font-weight:800;
-      color:white;
-      margin-bottom:4px;
-      line-height:1;
-    }
-    
-    .stats-label{
-      font-size:14px;
-      color:rgba(255,255,255,0.8);
-      font-weight:500;
-    }
-    
-    .stats-detail{
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px solid rgba(255,255,255,0.2);
-      font-size:13px;
-      color:rgba(255,255,255,0.9);
-    }
-    
-    /* Report */
-    .report-card{
-      margin-top:24px;
-      animation:fadeIn 0.6s ease;
-    }
-    
-    .report-card h2{
-      font-size:28px;
-      font-weight:800;
-      margin-bottom:24px;
-      background:linear-gradient(135deg, var(--text), var(--accent-light));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    
-    .report-content{
-      background:var(--bg-1);
-      padding:24px;
-      border-radius:16px;
-      margin-bottom:20px;
-      border:1px solid var(--glass-border);
-    }
-    
-    .report-content strong{
-      color:var(--accent-light);
-      font-size:18px;
-    }
-    
-    .report-content p{
-      margin:12px 0;
-      color:var(--muted);
-      line-height:1.8;
-    }
-    
-    .report-content ul{
-      list-style:none;
-      padding:0;
-      margin-top:16px;
-    }
-    
-    .report-content li{
-      padding:12px 16px;
-      background:var(--bg-2);
-      border-radius:10px;
-      margin-bottom:8px;
-      border-left:3px solid var(--accent);
-      transition:all 0.3s ease;
-    }
-    
-    .report-content li:hover{
-      background:var(--card-hover);
-      transform:translateX(4px);
-    }
-    
-    .advice{
-      background:linear-gradient(135deg, var(--success), #059669);
-      padding:20px 24px;
-      border-radius:16px;
-      color:white;
-      font-weight:600;
-      font-size:16px;
-      box-shadow:0 8px 24px rgba(16,185,129,0.3);
-      margin-bottom:20px;
-      line-height:1.6;
-    }
-    
-    /* Footer */
-    footer{
-      margin-top:40px;
-      padding:20px;
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-      opacity:0.8;
-    }
-    
-    /* Responsive */
-    @media(max-width:1024px){
-      .main-content{
-        grid-template-columns:1fr;
-      }
-      
-      .sidebar{
-        order:-1;
-      }
-      
-      .grid{
-        grid-template-columns:repeat(26, 1fr);
-      }
-    }
-    
-    @media(max-width:640px){
-      .container{
-        padding:12px;
-      }
-      
-      .app-header{
-        padding:16px 20px;
-        flex-direction:column;
-        gap:16px;
-        text-align:center;
-      }
-      
-      .logo-section{
-        flex-direction:column;
-      }
-      
-      .card{
-        padding:20px;
-      }
-      
-      .title-group h1{
-        font-size:20px;
-      }
-      
-      .question h3{
-        font-size:18px;
-      }
-      
-      .steps{
-        gap:6px;
-        justify-content:flex-start;
-      }
-      
-      .step{
-        min-width:36px;
-        height:36px;
-        font-size:14px;
-      }
-      
-      .options-grid{
-        grid-template-columns:1fr;
-      }
-      
-      .controls{
-        flex-direction:column-reverse;
-      }
-      
-      .controls button{
-        width:100%;
-        justify-content:center;
-      }
-      
-      .stats-value{
-        font-size:36px;
-      }
-    }
+      --bg-0:#071428; --bg-1:#0b1626; --bg-2:#0f2438; --card:#0f2234;
+      --muted:#98a3bd; --text:#e6eef6; --accent:#2b8eff; --accent-2:#60a5fa; --success:#10b981;
+      --glass:rgba(255,255,255,0.03); --glass-2:rgba(255,255,255,0.02); --focus: rgba(43,142,255,0.18);
+      --shadow: rgba(0,0,0,0.45);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:var(--text);background:linear-gradient(180deg,var(--bg-0),var(--bg-1));-webkit-font-smoothing:antialiased}
+
+    /* Layout container */
+    .container{max-width:1100px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:18px}
+
+    /* Header */
+    .app-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:14px;background:linear-gradient(180deg,var(--card),rgba(255,255,255,0.02));border:1px solid var(--glass);box-shadow:0 6px 20px var(--shadow);}
+    .logo-section{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 24px rgba(43,142,255,0.18)}
+    .logo svg{width:26px;height:26px;fill:white}
+    .title-group{min-width:0}
+    .title-group h1{font-size:1.05rem;margin:0;font-weight:800;line-height:1;color:var(--text)}
+    .title-group p{margin:0;color:var(--muted);font-size:0.85rem}
+
+    .lang-toggle{display:flex;gap:8px}
+    .lang-toggle button{padding:8px 10px;border-radius:10px;background:transparent;border:1px solid transparent;color:var(--muted);font-weight:700;cursor:pointer}
+    .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border-color:rgba(99,179,255,0.12)}
+
+    /* Main area: mobile-first stack */
+    .main{display:flex;flex-direction:column;gap:14px}
+
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:14px;border:1px solid var(--glass)}
+
+    /* Sidebar (stacked above on mobile) */
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .sidebar .field{display:flex;flex-direction:column;gap:6px}
+    label{font-size:0.85rem;color:var(--muted);font-weight:600}
+    input[type=text],input[type=number],textarea,select{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);outline:none;font-size:0.95rem}
+    input:focus,textarea:focus{box-shadow:0 6px 18px var(--focus);border-color:var(--accent)}
+    textarea{min-height:90px;resize:vertical}
+
+    /* Steps row (horizontal scroll on mobile) */
+    .steps{display:flex;gap:8px;overflow:auto;padding:6px 2px;align-items:center}
+    .steps::-webkit-scrollbar{height:6px}
+    .step{min-width:40px;height:40px;border-radius:10px;background:transparent;border:1px solid var(--glass);display:grid;place-items:center;color:var(--muted);font-weight:700;cursor:pointer;padding:6px}
+    .step.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border-color:transparent;box-shadow:0 8px 24px rgba(43,142,255,0.12);transform:translateY(-2px)}
+    .step.completed{background:linear-gradient(90deg,var(--success),#059669);color:white}
+
+    /* Question area */
+    .question{padding:8px 0}
+    .question h3{font-size:1rem;margin:0 0 10px 0;color:var(--text);line-height:1.35}
+    .options-grid{display:grid;grid-template-columns:1fr;gap:10px}
+    .option-btn{padding:12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--text);font-weight:700;cursor:pointer;text-align:center}
+    .option-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 8px 20px rgba(43,142,255,0.12);transform:translateY(-2px)}
+
+    /* Controls fixed bottom for mobile (improves reachability) */
+    .controls{display:flex;gap:10px;margin-top:12px}
+    .btn{flex:1;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    .btn-ghost{background:transparent;border:1px solid var(--glass);color:var(--text)}
+
+    /* Life visual grid (smaller on mobile) */
+    .life-visual{display:flex;flex-direction:column;gap:10px}
+    .life-visual .grid{display:grid;grid-template-columns:repeat(26, 1fr);gap:3px}
+    .cell{aspect-ratio:1/1;border-radius:3px;background:var(--glass);transition:all 0.18s ease}
+    .cell.past{background:linear-gradient(135deg,#123b7a,#083066);box-shadow:0 0 6px rgba(30,64,175,0.16)}
+    .cell.now{background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 10px rgba(43,142,255,0.24);animation:pulse 2.2s infinite}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.9}}
+
+    /* Stats card */
+    .stats{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:white}
+    .stats .value{font-size:1.8rem;font-weight:800}
+    .stats .label{font-size:0.85rem;opacity:0.95}
+
+    /* Report area */
+    .report{display:none;flex-direction:column;gap:12px}
+    .report .card{padding:16px}
+    .report ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    .report li{padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-left:3px solid var(--accent)}
+    .advice{padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--success),#059669);color:white;font-weight:700}
+
+    /* footer */
+    footer{color:var(--muted);font-size:0.85rem;text-align:center;padding:6px}
+
+    /* Larger screens layout */
+    @media(min-width:880px){
+      .main{flex-direction:row;align-items:flex-start;gap:20px}
+      .sidebar{width:320px;flex-shrink:0}
+      .content-panel{flex:1}
+      .steps{justify-content:flex-start}
+      .life-visual .grid{grid-template-columns:repeat(52, 1fr)}
+    }
+
+    @media(min-width:1100px){.container{max-width:1150px}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header class="app-header">
+  <div class="container" id="app">
+    <header class="app-header" role="banner">
       <div class="logo-section">
-        <div class="logo">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-          </svg>
+        <div class="logo" aria-hidden>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
         </div>
         <div class="title-group">
           <h1>Life Mirror</h1>
           <p>Un outil introspectif pour te donner conscience du temps</p>
         </div>
       </div>
-      <div class="lang-toggle">
-        <button id="langFr" class="active">FR</button>
-        <button id="langEn">EN</button>
+
+      <div class="lang-toggle" role="radiogroup" aria-label="Choisir la langue">
+        <button id="langFr" class="active" role="radio" aria-checked="true">FR</button>
+        <button id="langEn" role="radio" aria-checked="false">EN</button>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Questions Panel -->
-      <div class="card">
-        <div class="steps" id="steps"></div>
-        <div id="stepContent"></div>
-        <div class="controls">
-          <button id="prevBtn" class="btn-secondary" disabled>
-            <span>←</span> <span id="prevText">Précédent</span>
-          </button>
-          <button id="nextBtn" class="btn-primary">
-            <span id="nextText">Suivant</span> <span>→</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="sidebar-section">
-          <label id="lblName">Nom</label>
-          <input id="inputName" type="text" placeholder="Ex: Ange" />
+    <main class="main" role="main">
+      <!-- Sidebar (stacked on mobile) -->
+      <aside class="sidebar panel" aria-label="Paramètres utilisateur">
+        <div class="field">
+          <label for="inputName">Nom</label>
+          <input id="inputName" type="text" placeholder="Ex: Ange" inputmode="text" />
         </div>
 
-        <div class="sidebar-section">
-          <label id="lblAge">Âge actuel</label>
-          <input id="inputAge" type="number" min="0" max="130" value="20" />
+        <div class="field">
+          <label for="inputAge">Âge actuel</label>
+          <input id="inputAge" type="number" min="0" max="130" value="20" inputmode="numeric" />
         </div>
 
-        <div class="sidebar-section">
-          <label id="lblDeath">Âge estimé pour mourir</label>
-          <input id="inputDeath" type="number" min="1" max="140" value="80" />
+        <div class="field">
+          <label for="inputDeath">Âge estimé pour mourir</label>
+          <input id="inputDeath" type="number" min="1" max="140" value="80" inputmode="numeric" />
         </div>
 
-        <div class="stats">
-          <div class="stats-value" id="quickPercent">0%</div>
-          <div class="stats-label" id="statsLabel">de ta vie vécue</div>
-          <div class="stats-detail" id="quickLeft">0 semaines restantes</div>
+        <div class="stats" aria-live="polite">
+          <div class="value" id="quickPercent">0%</div>
+          <div class="label" id="statsLabel">de ta vie vécue</div>
+          <div class="label" id="quickLeft">0 semaines restantes</div>
         </div>
 
-        <div class="life-visual">
-          <div class="life-visual-title" id="visualTitle">Aperçu de la vie</div>
-          <div class="grid" id="gridPreview"></div>
+        <div class="life-visual" aria-hidden="false">
+          <div class="life-visual-title">Aperçu de la vie</div>
+          <div class="grid" id="gridPreview" aria-hidden="true"></div>
         </div>
-      </div>
-    </div>
+      </aside>
+
+      <!-- Questions panel -->
+      <section class="content-panel panel" aria-labelledby="questionTitle">
+        <div class="steps" id="steps" role="tablist" aria-label="Étapes"></div>
+
+        <div id="stepContent" aria-live="polite"></div>
+
+        <div class="controls" aria-hidden="false">
+          <button id="prevBtn" class="btn btn-ghost" aria-label="Précédent" disabled>← <span id="prevText">Précédent</span></button>
+          <button id="nextBtn" class="btn btn-primary" aria-label="Suivant"> <span id="nextText">Suivant</span> →</button>
+        </div>
+      </section>
+    </main>
 
     <!-- Final Report -->
-    <div id="finalReport" class="card report-card" style="display:none">
-      <h2 id="reportTitle">Rapport & Conseils</h2>
-      <div class="report-content" id="reportContent"></div>
-      <div class="advice" id="finalAdvice"></div>
-      <div class="controls">
-        <button id="downloadJSON" class="btn-secondary">
-          💾 <span id="downloadText">Télécharger</span>
-        </button>
-        <button id="restart" class="btn-primary">
-          🔄 <span id="restartText">Recommencer</span>
-        </button>
+    <section id="finalReport" class="panel report" aria-live="polite">
+      <div class="card" id="reportCard" style="display:none">
+        <h2 id="reportTitle">Rapport & Conseils</h2>
+        <div id="reportContent"></div>
+        <div class="advice" id="finalAdvice"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button id="downloadJSON" class="btn btn-ghost">💾 <span id="downloadText">Télécharger</span></button>
+          <button id="restart" class="btn btn-primary">🔄 <span id="restartText">Recommencer</span></button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <footer>
-      <p>Life Mirror • Tes réponses sont stockées localement dans ton navigateur</p>
-    </footer>
+    <footer><small>Life Mirror • Tes réponses sont stockées localement dans ton navigateur</small></footer>
   </div>
 
   <script>
-    // Questions
+    // Questions content (FR/EN)
     const Q = {
       fr: [
         {id:'q_regret', title:"Si tu mourais cette année, quel serait ton plus grand regret ?", type:'textarea', placeholder:'Ex: Ne pas avoir essayé mon projet'},
@@ -728,7 +196,7 @@
         {id:'q_project', title:"Si tu avais 5 ans à vivre, quel projet commencerais-tu demain ?", type:'textarea'},
         {id:'q_pride', title:"Es-tu fier(e) de la personne que tu deviens ?", type:'options', options:['Oui','Presque','Pas vraiment','Pas du tout']},
         {id:'q_health', title:"Comment te sens-tu physiquement ces derniers mois ?", type:'textarea'},
-        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ?", type:'text', placeholder:'Ex: marcher 20 min par jour'},
+        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ? (ex: marcher 20 min)", type:'text', placeholder:'Ex: marcher 20 min par jour'},
         {id:'q_fear', title:"Qu'est-ce qui te fait le plus peur dans la vie aujourd'hui ?", type:'textarea'},
         {id:'q_commit', title:"En 1 phrase : Quel est le premier petit pas que tu peux faire demain ?", type:'text', placeholder:'Ex: écrire 15 min sur mon projet'}
       ],
@@ -746,302 +214,153 @@
       ]
     };
 
+    // state
     let lang = 'fr';
     let stepIndex = 0;
-    let answers = {};
-    let completedSteps = new Set();
+    const answers = {};
+    const completed = new Set();
 
-    const langFr = document.getElementById('langFr');
-    const langEn = document.getElementById('langEn');
+    // elements
+    const el = id => document.getElementById(id);
+    const langFr = el('langFr'), langEn = el('langEn');
 
+    // language toggle
     function setLang(l){
       lang = l;
-      if(l==='fr'){
-        langFr.classList.add('active');
-        langEn.classList.remove('active');
-      }else{
-        langEn.classList.add('active');
-        langFr.classList.remove('active');
-      }
-      updateTexts();
-      renderSteps();
-      renderStepContent();
-      updatePreview();
+      langFr.classList.toggle('active', l==='fr');
+      langEn.classList.toggle('active', l==='en');
+      renderSteps(); renderStepContent(); updatePreview(); updateStaticTexts();
     }
-
-    function updateTexts(){
-      if(lang === 'fr'){
-        document.getElementById('lblName').textContent = 'Nom';
-        document.getElementById('lblAge').textContent = 'Âge actuel';
-        document.getElementById('lblDeath').textContent = 'Âge estimé pour mourir';
-        document.getElementById('inputName').placeholder = 'Ex: Ange';
-        document.getElementById('prevText').textContent = 'Précédent';
-        document.getElementById('nextText').textContent = 'Suivant';
-        document.getElementById('visualTitle').textContent = 'Aperçu de la vie';
-        document.getElementById('statsLabel').textContent = 'de ta vie vécue';
-        document.getElementById('reportTitle').textContent = 'Rapport & Conseils';
-        document.getElementById('downloadText').textContent = 'Télécharger';
-        document.getElementById('restartText').textContent = 'Recommencer';
-      }else{
-        document.getElementById('lblName').textContent = 'Name';
-        document.getElementById('lblAge').textContent = 'Your Age';
-        document.getElementById('lblDeath').textContent = 'Expected age of death';
-        document.getElementById('inputName').placeholder = 'E.g. John';
-        document.getElementById('prevText').textContent = 'Previous';
-        document.getElementById('nextText').textContent = 'Next';
-        document.getElementById('visualTitle').textContent = 'Life Preview';
-        document.getElementById('statsLabel').textContent = 'of your life lived';
-        document.getElementById('reportTitle').textContent = 'Report & Advice';
-        document.getElementById('downloadText').textContent = 'Download';
-        document.getElementById('restartText').textContent = 'Restart';
-      }
-    }
-
     langFr.addEventListener('click', ()=>setLang('fr'));
     langEn.addEventListener('click', ()=>setLang('en'));
 
-    function renderSteps(){
-      const stepsEl = document.getElementById('steps');
-      stepsEl.innerHTML='';
-      const qs = Q[lang];
-      for(let i=0; i<qs.length; i++){
-        const s = document.createElement('div');
-        s.className = 'step';
-        if(i === stepIndex) s.classList.add('active');
-        if(completedSteps.has(i)) s.classList.add('completed');
-        s.textContent = completedSteps.has(i) ? '' : (i+1);
-        stepsEl.appendChild(s);
-      }
+    function updateStaticTexts(){
+      const fr = lang==='fr';
+      el('prevText').textContent = fr? 'Précédent' : 'Previous';
+      el('nextText').textContent = fr? 'Suivant' : 'Next';
+      el('downloadText').textContent = fr? 'Télécharger' : 'Download';
+      el('restartText').textContent = fr? 'Recommencer' : 'Restart';
+      el('reportTitle').textContent = fr? 'Rapport & Conseils' : 'Report & Advice';
+      el('statsLabel').textContent = fr? 'de ta vie vécue' : 'of your life lived';
     }
 
-    function renderStepContent(){
-      const container = document.getElementById('stepContent');
-      container.innerHTML='';
+    // steps UI
+    function renderSteps(){
+      const container = el('steps'); container.innerHTML='';
       const qs = Q[lang];
-      const q = qs[stepIndex];
+      qs.forEach((q,i)=>{
+        const s = document.createElement('button'); s.className='step'; s.type='button'; s.setAttribute('aria-label', (lang==='fr'? 'Étape ':'Step ')+(i+1));
+        if(i===stepIndex) s.classList.add('active');
+        if(completed.has(i)) s.classList.add('completed');
+        s.textContent = completed.has(i)? '✓' : (i+1);
+        s.addEventListener('click', ()=>{ saveCurrent(); stepIndex = i; renderStepContent(); updatePreview(); });
+        container.appendChild(s);
+      });
+    }
 
-      const wrapper = document.createElement('div');
-      wrapper.className='question';
-      const title = document.createElement('h3');
-      title.textContent = q.title;
-      wrapper.appendChild(title);
+    // render question
+    function renderStepContent(){
+      const container = el('stepContent'); container.innerHTML='';
+      const qs = Q[lang]; const q = qs[stepIndex];
+
+      const wrapper = document.createElement('div'); wrapper.className='question';
+      const title = document.createElement('h3'); title.id='questionTitle'; title.textContent = q.title; wrapper.appendChild(title);
 
       let input;
       if(q.type==='textarea'){
-        input = document.createElement('textarea');
-        input.id='currentAnswer';
-        input.placeholder = q.placeholder || '';
+        input = document.createElement('textarea'); input.id='currentAnswer'; input.placeholder = q.placeholder || '';
         input.value = answers[q.id] || '';
+        input.addEventListener('keydown', onKeyDown);
       } else if(q.type==='options'){
-        input = document.createElement('div');
-        input.id='currentAnswer';
-        input.className='options-grid';
+        input = document.createElement('div'); input.className='options-grid'; input.id='currentAnswer';
         q.options.forEach(opt => {
-          const b = document.createElement('button');
-          b.type='button';
-          b.className='option-btn';
-          b.textContent = opt;
-          if(answers[q.id] === opt) b.classList.add('active');
-          b.addEventListener('click', ()=>{
-            answers[q.id]=opt;
-            Array.from(input.querySelectorAll('button')).forEach(x=>x.classList.remove('active'));
-            b.classList.add('active');
-          });
+          const b = document.createElement('button'); b.type='button'; b.className='option-btn'; b.textContent = opt; b.addEventListener('click', ()=>{ answers[q.id]=opt; Array.from(input.children).forEach(c=>c.classList.remove('active')); b.classList.add('active'); });
+          if(answers[q.id]===opt) b.classList.add('active');
           input.appendChild(b);
         });
       } else {
-        input = document.createElement('input');
-        input.type = q.type==='number'?'number':'text';
-        input.id='currentAnswer';
-        input.placeholder = q.placeholder || '';
+        input = document.createElement('input'); input.id='currentAnswer'; input.type = q.type==='number'?'number':'text'; input.placeholder = q.placeholder || '';
         input.value = answers[q.id] || '';
+        input.addEventListener('keydown', onKeyDown);
       }
 
       wrapper.appendChild(input);
       container.appendChild(wrapper);
-
-      setTimeout(()=>{
-        const el = document.getElementById('currentAnswer');
-        if(el && el.focus) el.focus();
-      },50);
-      
-      updateControls();
-      renderSteps();
+      setTimeout(()=>{ const cur = el('currentAnswer'); if(cur && cur.focus) cur.focus(); },60);
+      renderSteps(); updateControls();
     }
 
-    function updateControls(){
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const qs = Q[lang];
-      
-      prevBtn.disabled = stepIndex === 0;
-      
-      if(stepIndex === qs.length - 1){
-        nextBtn.querySelector('span:last-child').textContent = lang==='fr'?'Terminer ✓':'Finish ✓';
-      }else{
-        nextBtn.querySelector('span:last-child').textContent = '→';
-      }
-    }
-
-    document.getElementById('prevBtn').addEventListener('click', ()=>{
-      saveCurrent();
-      if(stepIndex>0){
-        stepIndex--;
-        renderStepContent();
-        updatePreview();
-      }
-    });
-
-    document.getElementById('nextBtn').addEventListener('click', ()=>{
-      saveCurrent();
-      completedSteps.add(stepIndex);
-      const qs = Q[lang];
-      if(stepIndex < qs.length -1){
-        stepIndex++;
-        renderStepContent();
-        updatePreview();
-      } else {
-        finish();
-      }
-    });
+    // keyboard next on Enter (except textarea)
+    function onKeyDown(e){ if(e.key === 'Enter' && e.target.tagName !== 'TEXTAREA'){ e.preventDefault(); el('nextBtn').click(); } }
 
     function saveCurrent(){
-      const qs = Q[lang];
-      const q = qs[stepIndex];
-      const el = document.getElementById('currentAnswer');
-      if(!el) return;
+      const qs = Q[lang]; const q = qs[stepIndex]; const cur = el('currentAnswer');
+      if(!cur) return;
       if(q.type==='options'){
-        // already set
+        // already stored on click
       } else {
-        answers[q.id] = el.value && el.value.trim ? el.value.trim() : el.value;
+        answers[q.id] = cur.value && cur.value.trim ? cur.value.trim() : cur.value;
       }
+      if(answers[q.id] && answers[q.id] !== '') completed.add(stepIndex);
+      renderSteps(); updateControls();
     }
 
+    // controls
+    function updateControls(){
+      const prev = el('prevBtn'); const next = el('nextBtn'); prev.disabled = stepIndex===0;
+      const qs = Q[lang];
+      if(stepIndex === qs.length-1){ next.innerHTML = (lang==='fr'? 'Terminer ✓':'Finish ✓'); } else { next.innerHTML = (lang==='fr'? 'Suivant →':'Next →'); }
+    }
+
+    el('prevBtn').addEventListener('click', ()=>{ saveCurrent(); if(stepIndex>0) stepIndex--; renderStepContent(); updatePreview(); });
+    el('nextBtn').addEventListener('click', ()=>{ saveCurrent(); const qs = Q[lang]; if(stepIndex < qs.length-1){ stepIndex++; renderStepContent(); updatePreview(); } else { finish(); } });
+
+    // preview grid
     function updatePreview(){
-      const age = parseInt(document.getElementById('inputAge').value) || 0;
-      const death = parseInt(document.getElementById('inputDeath').value) || 80;
-      const total = Math.max(1, death) * 52;
-      const lived = Math.max(0, age) * 52;
-      const grid = document.getElementById('gridPreview');
-      grid.innerHTML='';
-      for(let i=0; i<total; i++){
-        const c = document.createElement('div');
-        c.className='cell';
-        if(i<lived) c.classList.add('past');
-        if(i===lived) c.classList.add('now');
-        grid.appendChild(c);
-      }
-      const percent = Math.round((lived/total)*100);
-      document.getElementById('quickPercent').textContent = percent + '%';
-      const weeksLeft = Math.max(0,total - lived);
-      document.getElementById('quickLeft').textContent = weeksLeft + (lang==='fr'?' semaines restantes':' weeks remaining');
+      const age = parseInt(el('inputAge').value) || 0; const death = parseInt(el('inputDeath').value) || 80;
+      const total = Math.max(1, death) * 52; const lived = Math.max(0, age) * 52; const grid = el('gridPreview'); grid.innerHTML='';
+      // limit number of cells created on very large death ages for perf
+      const maxCells = (window.innerWidth < 480) ? Math.min(total, 26*2) : Math.min(total, 52*2);
+      const step = Math.ceil(total / maxCells);
+      for(let i=0; i<total; i+=step){ const c = document.createElement('div'); c.className='cell'; if(i<lived) c.classList.add('past'); if(i>=lived && i<lived+step) c.classList.add('now'); grid.appendChild(c);} 
+      const percent = Math.round((lived/total)*100); el('quickPercent').textContent = percent + '%'; el('quickLeft').textContent = Math.max(0,total - lived) + (lang==='fr'? ' semaines restantes':' weeks remaining');
+    }
+    el('inputAge').addEventListener('input', updatePreview); el('inputDeath').addEventListener('input', updatePreview);
+
+    // finish and show report
+    function finish(){ saveCurrent(); const name = el('inputName').value || (lang==='fr'? 'Ami':'Friend'); const age = parseInt(el('inputAge').value)||0; const death = parseInt(el('inputDeath').value)||80; const total = death*52; const lived = age*52; const percent = Math.round((lived/total)*100);
+      const reg = answers['q_regret']||''; const loved = answers['q_loved']||''; const dream = answers['q_dream']||''; const project = answers['q_project']||''; const pride = answers['q_pride']||''; const habit = answers['q_habit']||''; const commit = answers['q_commit']||'';
+
+      let summary = ''; if(reg) summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `); else summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
+      if(dream) summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.'); else summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
+
+      const actions = []; if(dream) actions.push(lang==='fr'? 'Écris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.'); if(habit) actions.push((lang==='fr'? 'Mets en place : ':'Start: ') + habit); else actions.push(lang==='fr'? 'Choisis une habitude simple (ex: marcher 20 min).' : 'Choose a simple habit (e.g. walk 20 min).'); if(commit) actions.push((lang==='fr'? 'Premier pas: ':'First step: ') + commit); actions.push(lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.');
+
+      const advPoolFr = ["Vous avez encore du temps — agissez maintenant.","Les petits pas constants battent la motivation intermittente.","Parlez à une personne proche aujourd'hui — la connexion change tout.","1 habitude, 30 jours — testez et observez la différence."]; const advPoolEn = ["You still have time — act now.","Small consistent steps beat intermittent motivation.","Talk to someone close today — connection matters.","One habit, 30 days — try it and observe the change."]; const adv = (lang==='fr'? advPoolFr:advPoolEn)[Math.floor(Math.random()*4)];
+
+      // build report DOM
+      const reportCard = el('reportCard'); reportCard.style.display='block'; const reportContent = el('reportContent'); reportContent.innerHTML='';
+      const head = document.createElement('div'); head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '}${lived} ${lang==='fr'? 'semaines (':'weeks ('}${percent}% )</p>`; reportContent.appendChild(head);
+      const summ = document.createElement('p'); summ.textContent = summary; reportContent.appendChild(summ);
+      const ul = document.createElement('ul'); actions.forEach(a=>{ const li=document.createElement('li'); li.textContent = a; ul.appendChild(li); }); reportContent.appendChild(ul);
+      el('finalAdvice').textContent = adv;
+
+      // save snapshot locally
+      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); arr.unshift({date:new Date().toISOString(), name, lang, age, death, percent, answers}); localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20))); }catch(e){}
+
+      reportCard.scrollIntoView({behavior:'smooth'});
     }
 
-    document.getElementById('inputAge').addEventListener('input', updatePreview);
-    document.getElementById('inputDeath').addEventListener('input', updatePreview);
-
-    function finish(){
-      saveCurrent();
-      const name = document.getElementById('inputName').value || (lang==='fr'? 'Ami':'Friend');
-      const age = parseInt(document.getElementById('inputAge').value) || 0;
-      const death = parseInt(document.getElementById('inputDeath').value) || 80;
-      const total = death * 52;
-      const lived = age * 52;
-      const percent = Math.round((lived/total)*100);
-
-      const reg = answers['q_regret'] || '';
-      const loved = answers['q_loved'] || '';
-      const dream = answers['q_dream'] || '';
-      const project = answers['q_project'] || '';
-      const pride = answers['q_pride'] || '';
-      const habit = answers['q_habit'] || '';
-      const commit = answers['q_commit'] || '';
-
-      let summary = '';
-      if(reg){
-        summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `);
-      }else{
-        summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
-      }
-
-      if(dream){
-        summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.');
-      }else{
-        summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
-      }
-
-      const actions = [];
-      if(dream) actions.push(lang==='fr'? 'Écris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.');
-      if(habit) actions.push((lang==='fr'? 'Mets en place : ':'Start: ') + habit);
-      else actions.push(lang==='fr'? 'Choisis une habitude simple (ex: marcher 20 min).' : 'Choose a simple habit (e.g. walk 20 min).');
-      if(commit) actions.push((lang==='fr'? 'Premier pas: ':'First step: ') + commit);
-      actions.push(lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.');
-
-      const advPoolFr = [
-        "Vous avez encore du temps — agissez maintenant.",
-        "Les petits pas constants battent la motivation intermittente.",
-        "Parlez à une personne proche aujourd'hui — la connexion change tout.",
-        "1 habitude, 30 jours — testez et observez la différence."
-      ];
-      const advPoolEn = [
-        "You still have time — act now.",
-        "Small consistent steps beat intermittent motivation.",
-        "Talk to someone close today — connection matters.",
-        "One habit, 30 days — try it and observe the change."
-      ];
-      const adv = (lang==='fr'? advPoolFr:advPoolEn)[Math.floor(Math.random()*4)];
-
-      const reportEl = document.getElementById('reportContent');
-      reportEl.innerHTML = '';
-      const head = document.createElement('div');
-      head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '} ${lived} ${lang==='fr'? 'semaines (' : 'weeks ('}${percent}% )</p>`;
-      reportEl.appendChild(head);
-
-      const summ = document.createElement('p');
-      summ.textContent = summary;
-      reportEl.appendChild(summ);
-
-      const ul = document.createElement('ul');
-      actions.forEach(a=>{
-        const li=document.createElement('li');
-        li.textContent=a;
-        ul.appendChild(li);
-      });
-      reportEl.appendChild(ul);
-
-      document.getElementById('finalAdvice').textContent = adv;
-
-      const snap = {date:new Date().toISOString(), name, lang, age, death, percent, answers};
-      try{
-        const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]');
-        arr.unshift(snap);
-        localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20)));
-      }catch(e){}
-
-      document.getElementById('finalReport').style.display='block';
-      document.getElementById('finalReport').scrollIntoView({behavior:'smooth'});
-    }
-
-    document.getElementById('downloadJSON').addEventListener('click', ()=>{
-      const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]');
-      const blob = new Blob([JSON.stringify(arr[0]||{},null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      a.download='life_mirror_report.json';
-      a.click();
-      URL.revokeObjectURL(url);
+    // download JSON
+    el('downloadJSON').addEventListener('click', ()=>{
+      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); const blob = new Blob([JSON.stringify(arr[0]||{},null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='life_mirror_report.json'; a.click(); URL.revokeObjectURL(url);}catch(e){}
     });
 
-    document.getElementById('restart').addEventListener('click', ()=>{
-      location.reload();
-    });
+    // restart
+    el('restart').addEventListener('click', ()=>{ location.reload(); });
 
-    // Initialize
-    updateTexts();
-    setLang('fr');
-    updatePreview();
-    renderStepContent();
+    // init
+    setLang('fr'); renderSteps(); renderStepContent(); updatePreview(); updateStaticTexts();
   </script>
 </body>
 </html>
