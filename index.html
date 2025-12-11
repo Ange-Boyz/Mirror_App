@@ -3,120 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#071428" />
-  <title>Life Mirror — Réflexion sur le Temps</title>
+  <title>Life Mirror — Prise de conscience</title>
+
+  <!-- PDF libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
-    /* ---------------------------------------------
-       Life Mirror — Responsive, mobile-first
-       Improvements: accessibility, touch targets, fluid grid,
-       reduced visual noise on small screens, keyboard support
-       ----------------------------------------------*/
+    /* ---------- Theme & reset (mobile-first) ---------- */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-
     :root{
-      --bg-0:#071428; --bg-1:#0b1626; --bg-2:#0f2438; --card:#0f2234;
-      --muted:#98a3bd; --text:#e6eef6; --accent:#2b8eff; --accent-2:#60a5fa; --success:#10b981;
-      --glass:rgba(255,255,255,0.03); --glass-2:rgba(255,255,255,0.02); --focus: rgba(43,142,255,0.18);
-      --shadow: rgba(0,0,0,0.45);
+      --bg-0:#061226; --bg-1:#0b1730; --card:#0f2238;
+      --muted:#96a3bf; --text:#e6eef6; --accent:#2b8eff; --accent-2:#60a5fa; --success:#10b981;
+      --glass: rgba(255,255,255,0.03); --focus: rgba(43,142,255,0.14);
     }
-
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:var(--text);background:linear-gradient(180deg,var(--bg-0),var(--bg-1));-webkit-font-smoothing:antialiased}
+    a{color:inherit}
 
-    /* Layout container */
-    .container{max-width:1100px;margin:0 auto;padding:18px;min-height:100vh;display:flex;flex-direction:column;gap:18px}
+    /* Container */
+    .container{max-width:1080px;margin:18px auto;padding:16px;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 36px)}
 
     /* Header */
-    .app-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:14px;background:linear-gradient(180deg,var(--card),rgba(255,255,255,0.02));border:1px solid var(--glass);box-shadow:0 6px 20px var(--shadow);}
-    .logo-section{display:flex;align-items:center;gap:12px;min-width:0}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 24px rgba(43,142,255,0.18)}
-    .logo svg{width:26px;height:26px;fill:white}
-    .title-group{min-width:0}
-    .title-group h1{font-size:1.05rem;margin:0;font-weight:800;line-height:1;color:var(--text)}
-    .title-group p{margin:0;color:var(--muted);font-size:0.85rem}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-radius:12px;background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02));border:1px solid var(--glass)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 28px rgba(43,142,255,0.12)}
+    .logo svg{width:24px;height:24px;fill:white}
+    h1{font-size:1.05rem;margin:0}
+    p.subtitle{margin:0;color:var(--muted);font-size:0.9rem}
 
-    .lang-toggle{display:flex;gap:8px}
-    .lang-toggle button{padding:8px 10px;border-radius:10px;background:transparent;border:1px solid transparent;color:var(--muted);font-weight:700;cursor:pointer}
-    .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border-color:rgba(99,179,255,0.12)}
+    .lang-toggle{display:flex;gap:6px}
+    .lang-toggle button{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid transparent;color:var(--muted);cursor:pointer;font-weight:700}
+    .lang-toggle button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
 
-    /* Main area: mobile-first stack */
-    .main{display:flex;flex-direction:column;gap:14px}
+    /* Main layout */
+    .main{display:flex;flex-direction:column;gap:16px}
 
-    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:14px;border:1px solid var(--glass)}
-
-    /* Sidebar (stacked above on mobile) */
+    /* Sidebar (stacked on mobile) */
     .sidebar{display:flex;flex-direction:column;gap:12px}
-    .sidebar .field{display:flex;flex-direction:column;gap:6px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px;border:1px solid var(--glass)}
+    .field{display:flex;flex-direction:column;gap:8px}
     label{font-size:0.85rem;color:var(--muted);font-weight:600}
     input[type=text],input[type=number],textarea,select{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);outline:none;font-size:0.95rem}
-    input:focus,textarea:focus{box-shadow:0 6px 18px var(--focus);border-color:var(--accent)}
-    textarea{min-height:90px;resize:vertical}
+    textarea{min-height:88px;resize:vertical}
+    input:focus,textarea:focus{box-shadow:0 8px 20px var(--focus);border-color:var(--accent)}
 
-    /* Steps row (horizontal scroll on mobile) */
-    .steps{display:flex;gap:8px;overflow:auto;padding:6px 2px;align-items:center}
-    .steps::-webkit-scrollbar{height:6px}
-    .step{min-width:40px;height:40px;border-radius:10px;background:transparent;border:1px solid var(--glass);display:grid;place-items:center;color:var(--muted);font-weight:700;cursor:pointer;padding:6px}
-    .step.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border-color:transparent;box-shadow:0 8px 24px rgba(43,142,255,0.12);transform:translateY(-2px)}
+    /* Steps (horizontal on mobile) */
+    .steps{display:flex;gap:8px;overflow:auto;padding:6px 2px}
+    .step{min-width:40px;height:40px;border-radius:10px;background:transparent;border:1px solid var(--glass);display:grid;place-items:center;color:var(--muted);font-weight:700;cursor:pointer}
+    .step.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;transform:translateY(-3px);box-shadow:0 10px 30px rgba(43,142,255,0.12)}
     .step.completed{background:linear-gradient(90deg,var(--success),#059669);color:white}
 
     /* Question area */
-    .question{padding:8px 0}
+    .question{padding:6px 0}
     .question h3{font-size:1rem;margin:0 0 10px 0;color:var(--text);line-height:1.35}
-    .options-grid{display:grid;grid-template-columns:1fr;gap:10px}
-    .option-btn{padding:12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--text);font-weight:700;cursor:pointer;text-align:center}
+    .options-grid{display:grid;grid-template-columns:1fr;gap:8px}
+    .option-btn{padding:12px;border-radius:10px;border:1px solid var(--glass);background:transparent;color:var(--text);font-weight:700;cursor:pointer}
     .option-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 8px 20px rgba(43,142,255,0.12);transform:translateY(-2px)}
 
-    /* Controls fixed bottom for mobile (improves reachability) */
+    /* Controls */
     .controls{display:flex;gap:10px;margin-top:12px}
-    .btn{flex:1;padding:12px 14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn{flex:1;padding:12px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
     .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
     .btn-ghost{background:transparent;border:1px solid var(--glass);color:var(--text)}
 
-    /* Life visual grid (smaller on mobile) */
+    /* Life grid & stats */
     .life-visual{display:flex;flex-direction:column;gap:10px}
-    .life-visual .grid{display:grid;grid-template-columns:repeat(26, 1fr);gap:3px}
-    .cell{aspect-ratio:1/1;border-radius:3px;background:var(--glass);transition:all 0.18s ease}
+    .grid{display:grid;grid-template-columns:repeat(26, 1fr);gap:3px}
+    .cell{aspect-ratio:1/1;border-radius:3px;background:var(--glass);transition:all .18s}
     .cell.past{background:linear-gradient(135deg,#123b7a,#083066);box-shadow:0 0 6px rgba(30,64,175,0.16)}
     .cell.now{background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 10px rgba(43,142,255,0.24);animation:pulse 2.2s infinite}
-    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.9}}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.95}}
 
-    /* Stats card */
-    .stats{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:white}
-    .stats .value{font-size:1.8rem;font-weight:800}
-    .stats .label{font-size:0.85rem;opacity:0.95}
+    .stats{padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#2563eb);color:white;text-align:center}
+    .stats .value{font-size:1.6rem;font-weight:800}
+    .stats .label{font-size:.9rem;opacity:.95}
 
-    /* Report area */
+    /* Report */
     .report{display:none;flex-direction:column;gap:12px}
-    .report .card{padding:16px}
-    .report ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-    .report li{padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-left:3px solid var(--accent)}
-    .advice{padding:12px;border-radius:10px;background:linear-gradient(90deg,var(--success),#059669);color:white;font-weight:700}
+    .report .card{padding:14px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;border:1px solid var(--glass)}
+    .report h2{margin:0 0 8px 0}
+    .report p{margin:8px 0;color:var(--muted);line-height:1.6}
 
-    /* footer */
-    footer{color:var(--muted);font-size:0.85rem;text-align:center;padding:6px}
+    footer{color:var(--muted);font-size:12px;text-align:center;padding:8px}
 
-    /* Larger screens layout */
+    /* Larger screens */
     @media(min-width:880px){
       .main{flex-direction:row;align-items:flex-start;gap:20px}
       .sidebar{width:320px;flex-shrink:0}
-      .content-panel{flex:1}
-      .steps{justify-content:flex-start}
-      .life-visual .grid{grid-template-columns:repeat(52, 1fr)}
+      .content{flex:1}
+      .grid{grid-template-columns:repeat(52,1fr)}
     }
 
-    @media(min-width:1100px){.container{max-width:1150px}}
+    @media(max-width:420px){
+      .step{min-width:36px;height:36px}
+      .grid{grid-template-columns:repeat(20,1fr)}
+      .option-btn{padding:10px}
+      .btn{padding:10px}
+    }
   </style>
 </head>
 <body>
-  <div class="container" id="app">
-    <header class="app-header" role="banner">
-      <div class="logo-section">
+  <div class="container" role="application" aria-live="polite">
+    <!-- Header -->
+    <header class="header" role="banner">
+      <div class="brand">
         <div class="logo" aria-hidden>
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 3a7 7 0 110 14 7 7 0 010-14z"/></svg>
         </div>
-        <div class="title-group">
+        <div>
           <h1>Life Mirror</h1>
-          <p>Un outil introspectif pour te donner conscience du temps</p>
+          <p class="subtitle">Un outil pour prendre conscience de ton temps</p>
         </div>
       </div>
 
@@ -126,58 +123,64 @@
       </div>
     </header>
 
+    <!-- Main -->
     <main class="main" role="main">
-      <!-- Sidebar (stacked on mobile) -->
+      <!-- Sidebar (mobile stacked) -->
       <aside class="sidebar panel" aria-label="Paramètres utilisateur">
         <div class="field">
-          <label for="inputName">Nom</label>
-          <input id="inputName" type="text" placeholder="Ex: Ange" inputmode="text" />
+          <label for="nameInput" id="lblName">Nom</label>
+          <input id="nameInput" type="text" placeholder="Ex: Ange" inputmode="text" />
         </div>
 
         <div class="field">
-          <label for="inputAge">Âge actuel</label>
-          <input id="inputAge" type="number" min="0" max="130" value="20" inputmode="numeric" />
+          <label for="ageInput" id="lblAge">Âge actuel</label>
+          <input id="ageInput" type="number" min="0" max="130" value="20" inputmode="numeric" />
         </div>
 
         <div class="field">
-          <label for="inputDeath">Âge estimé pour mourir</label>
-          <input id="inputDeath" type="number" min="1" max="140" value="80" inputmode="numeric" />
+          <label for="deathInput" id="lblDeath">Âge estimé pour mourir</label>
+          <input id="deathInput" type="number" min="1" max="140" value="80" inputmode="numeric" />
         </div>
 
         <div class="stats" aria-live="polite">
-          <div class="value" id="quickPercent">0%</div>
-          <div class="label" id="statsLabel">de ta vie vécue</div>
-          <div class="label" id="quickLeft">0 semaines restantes</div>
+          <div class="value" id="percentView">0%</div>
+          <div class="label" id="percentLabel">de ta vie vécue</div>
+          <div class="label" id="weeksLeft">0 semaines restantes</div>
+          <div class="label" id="totalCases" style="margin-top:6px;font-size:12px;opacity:0.9">Total cases: 0</div>
         </div>
 
-        <div class="life-visual" aria-hidden="false">
-          <div class="life-visual-title">Aperçu de la vie</div>
-          <div class="grid" id="gridPreview" aria-hidden="true"></div>
+        <div class="panel" style="margin-top:6px">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Aperçu</div>
+          <div class="life-visual">
+            <div class="grid" id="previewGrid" aria-hidden="true"></div>
+          </div>
         </div>
       </aside>
 
-      <!-- Questions panel -->
-      <section class="content-panel panel" aria-labelledby="questionTitle">
+      <!-- Content -->
+      <section class="content panel" aria-labelledby="questionTitle">
         <div class="steps" id="steps" role="tablist" aria-label="Étapes"></div>
 
-        <div id="stepContent" aria-live="polite"></div>
+        <div id="questionArea" aria-live="polite" style="margin-top:12px"></div>
 
-        <div class="controls" aria-hidden="false">
+        <div class="controls" style="margin-top:12px">
           <button id="prevBtn" class="btn btn-ghost" aria-label="Précédent" disabled>← <span id="prevText">Précédent</span></button>
-          <button id="nextBtn" class="btn btn-primary" aria-label="Suivant"> <span id="nextText">Suivant</span> →</button>
+          <button id="nextBtn" class="btn btn-primary" aria-label="Suivant"><span id="nextText">Suivant</span> →</button>
         </div>
       </section>
     </main>
 
-    <!-- Final Report -->
-    <section id="finalReport" class="panel report" aria-live="polite">
+    <!-- Report -->
+    <section class="report" id="reportSection" aria-live="polite">
       <div class="card" id="reportCard" style="display:none">
         <h2 id="reportTitle">Rapport & Conseils</h2>
         <div id="reportContent"></div>
-        <div class="advice" id="finalAdvice"></div>
-        <div style="display:flex;gap:8px;margin-top:12px;">
-          <button id="downloadJSON" class="btn btn-ghost">💾 <span id="downloadText">Télécharger</span></button>
-          <button id="restart" class="btn btn-primary">🔄 <span id="restartText">Recommencer</span></button>
+        <div id="adviceBox" class="panel" style="margin-top:12px;display:none"></div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button id="downloadPDF" class="btn btn-primary">📄 Télécharger PDF</button>
+          <button id="downloadJSON" class="btn btn-ghost">💾 Télécharger JSON</button>
+          <button id="restartBtn" class="btn btn-ghost">🔄 Recommencer</button>
         </div>
       </div>
     </section>
@@ -186,181 +189,337 @@
   </div>
 
   <script>
-    // Questions content (FR/EN)
-    const Q = {
+  (function(){
+    // Questions (Option A — 10 questions)
+    const QUESTIONS = {
       fr: [
-        {id:'q_regret', title:"Si tu mourais cette année, quel serait ton plus grand regret ?", type:'textarea', placeholder:'Ex: Ne pas avoir essayé mon projet'},
-        {id:'q_loved', title:"As-tu des personnes qui t'aiment réellement aujourd'hui ?", type:'options', options:['Oui','Un peu','Je ne sais pas','Non']},
-        {id:'q_last_thanks', title:"Quand as-tu dit 'merci' ou 'je t'aime' pour la dernière fois ?", type:'text', placeholder:'Ex: Hier, il y a 1 semaine...'},
-        {id:'q_dream', title:"As-tu un rêve que tu repousses depuis longtemps ? Lequel ?", type:'textarea'},
-        {id:'q_project', title:"Si tu avais 5 ans à vivre, quel projet commencerais-tu demain ?", type:'textarea'},
-        {id:'q_pride', title:"Es-tu fier(e) de la personne que tu deviens ?", type:'options', options:['Oui','Presque','Pas vraiment','Pas du tout']},
-        {id:'q_health', title:"Comment te sens-tu physiquement ces derniers mois ?", type:'textarea'},
-        {id:'q_habit', title:"Quelle habitude simple pourrait améliorer ta vie ? (ex: marcher 20 min)", type:'text', placeholder:'Ex: marcher 20 min par jour'},
-        {id:'q_fear', title:"Qu'est-ce qui te fait le plus peur dans la vie aujourd'hui ?", type:'textarea'},
-        {id:'q_commit', title:"En 1 phrase : Quel est le premier petit pas que tu peux faire demain ?", type:'text', placeholder:'Ex: écrire 15 min sur mon projet'}
+        {id:'q_name', title:"Quel est ton nom ?", type:'text', placeholder:'Ex: Ange'},
+        {id:'q_age', title:"Quel âge as-tu actuellement ?", type:'number', placeholder:'Ex: 20'},
+        {id:'q_death', title:"À quel âge penses-tu ou aimerais-tu mourir ?", type:'number', placeholder:'Ex: 80'},
+        {id:'q_happy', title:"Qu'est-ce qui te rend vraiment heureux dans la vie ?", type:'textarea', placeholder:'Ex: Passer du temps avec ma famille, créer...'},
+        {id:'q_fear', title:"Qu'est-ce qui te stresse ou te fait peur ?", type:'textarea', placeholder:'Ex: Perdre un proche, ne pas réussir...'},
+        {id:'q_dream', title:"Quel est ton plus grand rêve non encore réalisé ?", type:'textarea', placeholder:'Ex: Lancer un produit...'},
+        {id:'q_regret', title:"Quelle est la plus grande chose que tu regrettes ?", type:'textarea', placeholder:'Ex: Ne pas avoir essayé...'},
+        {id:'q_people', title:"Qui sont les personnes les plus importantes pour toi ?", type:'text', placeholder:'Ex: Famille, Alice...'},
+        {id:'q_change', title:"Qu'aimerais-tu changer dans ta vie aujourd’hui ?", type:'textarea', placeholder:'Ex: Me lever plus tôt...'},
+        {id:'q_message', title:"Si tu mourais demain, que voudrais-tu qu'on se souvienne de toi ?", type:'text', placeholder:'Ex: J\'ai toujours aidé les autres...'}
       ],
       en: [
-        {id:'q_regret', title:"If you died this year, what would be your biggest regret?", type:'textarea', placeholder:'E.g. Not trying my project'},
-        {id:'q_loved', title:"Do you have people who truly love you today?", type:'options', options:['Yes','Somewhat','I don\'t know','No']},
-        {id:'q_last_thanks', title:"When did you last say 'thank you' or 'I love you'?", type:'text', placeholder:'E.g. Yesterday, a week ago...'},
-        {id:'q_dream', title:"Do you have a dream you've been postponing? Which one?", type:'textarea'},
-        {id:'q_project', title:"If you had 5 years to live, which project would you start tomorrow?", type:'textarea'},
-        {id:'q_pride', title:"Are you proud of who you are becoming?", type:'options', options:['Yes','Almost','Not really','Not at all']},
-        {id:'q_health', title:"How have you been feeling physically these past months?", type:'textarea'},
-        {id:'q_habit', title:"Which simple habit could improve your life?", type:'text', placeholder:'E.g. walk 20 min daily'},
-        {id:'q_fear', title:"What scares you most in life today?", type:'textarea'},
-        {id:'q_commit', title:"In one sentence: What's the first small step you can take tomorrow?", type:'text', placeholder:'E.g. write 15 minutes about my idea'}
+        {id:'q_name', title:"What is your name?", type:'text', placeholder:'Ex: John'},
+        {id:'q_age', title:"How old are you now?", type:'number', placeholder:'Ex: 20'},
+        {id:'q_death', title:"At what age do you think or wish to die?", type:'number', placeholder:'Ex: 80'},
+        {id:'q_happy', title:"What truly makes you happy in life?", type:'textarea', placeholder:'E.g. Spending time with family, creating...'},
+        {id:'q_fear', title:"What stresses or scares you the most?", type:'textarea', placeholder:'E.g. Losing a loved one, failing...'},
+        {id:'q_dream', title:"What is your biggest dream not yet achieved?", type:'textarea', placeholder:'E.g. Launch a product...'},
+        {id:'q_regret', title:"What is your biggest regret?", type:'textarea', placeholder:'E.g. Not having tried...'},
+        {id:'q_people', title:"Who are the most important people in your life?", type:'text', placeholder:'E.g. Family, Alice...'},
+        {id:'q_change', title:"What would you like to change in your life today?", type:'textarea', placeholder:'E.g. Wake up earlier...'},
+        {id:'q_message', title:"If you died tomorrow, what would you like to be remembered for?", type:'text', placeholder:'E.g. I always helped others...'}
       ]
     };
 
     // state
     let lang = 'fr';
-    let stepIndex = 0;
-    const answers = {};
-    const completed = new Set();
+    let index = 0;
+    const answers = {}; // store by id
 
-    // elements
-    const el = id => document.getElementById(id);
-    const langFr = el('langFr'), langEn = el('langEn');
+    // DOM refs
+    const $ = id => document.getElementById(id);
+    const stepsEl = $('steps');
+    const questionArea = $('questionArea');
+    const prevBtn = $('prevBtn');
+    const nextBtn = $('nextBtn');
+    const nameInput = $('nameInput'), ageInput = $('ageInput'), deathInput = $('deathInput');
+    const previewGrid = $('previewGrid'), percentView = $('percentView'), weeksLeft = $('weeksLeft'), totalCases = $('totalCases');
+    const reportCard = $('reportCard'), reportContent = $('reportContent'), adviceBox = $('adviceBox');
+    const reportSection = $('reportSection');
+    const downloadPDF = $('downloadPDF'), downloadJSON = $('downloadJSON'), restartBtn = $('restartBtn');
 
     // language toggle
+    $('langFr').addEventListener('click', ()=>setLang('fr'));
+    $('langEn').addEventListener('click', ()=>setLang('en'));
+
     function setLang(l){
       lang = l;
-      langFr.classList.toggle('active', l==='fr');
-      langEn.classList.toggle('active', l==='en');
-      renderSteps(); renderStepContent(); updatePreview(); updateStaticTexts();
+      $('langFr').classList.toggle('active', l==='fr');
+      $('langEn').classList.toggle('active', l==='en');
+      renderSteps();
+      renderQuestion();
+      updatePreview();
+      localizeStatic();
     }
-    langFr.addEventListener('click', ()=>setLang('fr'));
-    langEn.addEventListener('click', ()=>setLang('en'));
 
-    function updateStaticTexts(){
+    function localizeStatic(){
       const fr = lang==='fr';
-      el('prevText').textContent = fr? 'Précédent' : 'Previous';
-      el('nextText').textContent = fr? 'Suivant' : 'Next';
-      el('downloadText').textContent = fr? 'Télécharger' : 'Download';
-      el('restartText').textContent = fr? 'Recommencer' : 'Restart';
-      el('reportTitle').textContent = fr? 'Rapport & Conseils' : 'Report & Advice';
-      el('statsLabel').textContent = fr? 'de ta vie vécue' : 'of your life lived';
+      $('prevText').textContent = fr? 'Précédent':'Previous';
+      $('nextText').textContent = fr? 'Suivant':'Next';
+      $('lblName').textContent = fr? 'Nom':'Name';
+      $('lblAge').textContent = fr? 'Âge actuel':'Your age';
+      $('lblDeath').textContent = fr? 'Âge estimé pour mourir':'Expected age of death';
+      $('percentLabel').textContent = fr? 'de ta vie vécue':'of your life lived';
+      $('reportTitle').textContent = fr? 'Rapport & Conseils':'Report & Advice';
+      $('downloadPDF').textContent = fr? '📄 Télécharger PDF':'📄 Download PDF';
+      $('downloadJSON').textContent = fr? '💾 Télécharger JSON':'💾 Download JSON';
+      $('restartBtn').textContent = fr? '🔄 Recommencer':'🔄 Restart';
     }
 
-    // steps UI
+    // build steps
     function renderSteps(){
-      const container = el('steps'); container.innerHTML='';
-      const qs = Q[lang];
+      stepsEl.innerHTML = '';
+      const qs = QUESTIONS[lang];
       qs.forEach((q,i)=>{
-        const s = document.createElement('button'); s.className='step'; s.type='button'; s.setAttribute('aria-label', (lang==='fr'? 'Étape ':'Step ')+(i+1));
-        if(i===stepIndex) s.classList.add('active');
-        if(completed.has(i)) s.classList.add('completed');
-        s.textContent = completed.has(i)? '✓' : (i+1);
-        s.addEventListener('click', ()=>{ saveCurrent(); stepIndex = i; renderStepContent(); updatePreview(); });
-        container.appendChild(s);
+        const btn = document.createElement('button');
+        btn.className = 'step' + (i===index ? ' active' : '') + (answers[q.id] ? ' completed' : '');
+        btn.type = 'button';
+        btn.textContent = answers[q.id] ? '✓' : (i+1);
+        btn.addEventListener('click', ()=>{ saveCurrent(); index = i; renderQuestion(); updatePreview(); });
+        stepsEl.appendChild(btn);
       });
     }
 
-    // render question
-    function renderStepContent(){
-      const container = el('stepContent'); container.innerHTML='';
-      const qs = Q[lang]; const q = qs[stepIndex];
+    // render current question
+    function renderQuestion(){
+      questionArea.innerHTML = '';
+      const q = QUESTIONS[lang][index];
+      const wrapper = document.createElement('div');
+      wrapper.className = 'question';
 
-      const wrapper = document.createElement('div'); wrapper.className='question';
-      const title = document.createElement('h3'); title.id='questionTitle'; title.textContent = q.title; wrapper.appendChild(title);
+      const title = document.createElement('h3');
+      title.id = 'questionTitle';
+      title.textContent = q.title;
+      wrapper.appendChild(title);
 
       let input;
-      if(q.type==='textarea'){
-        input = document.createElement('textarea'); input.id='currentAnswer'; input.placeholder = q.placeholder || '';
-        input.value = answers[q.id] || '';
-        input.addEventListener('keydown', onKeyDown);
-      } else if(q.type==='options'){
-        input = document.createElement('div'); input.className='options-grid'; input.id='currentAnswer';
-        q.options.forEach(opt => {
-          const b = document.createElement('button'); b.type='button'; b.className='option-btn'; b.textContent = opt; b.addEventListener('click', ()=>{ answers[q.id]=opt; Array.from(input.children).forEach(c=>c.classList.remove('active')); b.classList.add('active'); });
-          if(answers[q.id]===opt) b.classList.add('active');
-          input.appendChild(b);
-        });
+      if(q.type === 'textarea'){
+        input = document.createElement('textarea');
+        input.rows = 5;
       } else {
-        input = document.createElement('input'); input.id='currentAnswer'; input.type = q.type==='number'?'number':'text'; input.placeholder = q.placeholder || '';
-        input.value = answers[q.id] || '';
-        input.addEventListener('keydown', onKeyDown);
+        input = document.createElement('input');
+        input.type = q.type === 'number' ? 'number' : 'text';
+        if(q.type === 'number'){ input.min = 0; }
       }
-
+      input.id = 'currentInput';
+      input.placeholder = q.placeholder || '';
+      input.value = answers[q.id] || '';
+      input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' && input.tagName !== 'TEXTAREA'){ e.preventDefault(); nextBtn.click(); }
+      });
       wrapper.appendChild(input);
-      container.appendChild(wrapper);
-      setTimeout(()=>{ const cur = el('currentAnswer'); if(cur && cur.focus) cur.focus(); },60);
-      renderSteps(); updateControls();
-    }
 
-    // keyboard next on Enter (except textarea)
-    function onKeyDown(e){ if(e.key === 'Enter' && e.target.tagName !== 'TEXTAREA'){ e.preventDefault(); el('nextBtn').click(); } }
+      // hint: show sample for age/death fields (synchronize sidebar)
+      if(q.id === 'q_name'){ input.addEventListener('input', e => nameInput.value = e.target.value); nameInput.addEventListener('input', e => input.value = e.target.value); }
+      if(q.id === 'q_age'){ input.addEventListener('input', e => ageInput.value = e.target.value); ageInput.addEventListener('input', e => input.value = e.target.value); }
+      if(q.id === 'q_death'){ input.addEventListener('input', e => deathInput.value = e.target.value); deathInput.addEventListener('input', e => input.value = e.target.value); }
+
+      questionArea.appendChild(wrapper);
+
+      // update controls and steps UI
+      renderSteps();
+      prevBtn.disabled = index === 0;
+      if(index === QUESTIONS[lang].length - 1){
+        nextBtn.innerHTML = lang==='fr'? 'Terminer ✓' : 'Finish ✓';
+      } else {
+        nextBtn.innerHTML = (lang==='fr'? 'Suivant →' : 'Next →');
+      }
+      // focus
+      setTimeout(()=>{ input.focus(); },50);
+    }
 
     function saveCurrent(){
-      const qs = Q[lang]; const q = qs[stepIndex]; const cur = el('currentAnswer');
+      const q = QUESTIONS[lang][index];
+      const cur = document.getElementById('currentInput');
       if(!cur) return;
-      if(q.type==='options'){
-        // already stored on click
-      } else {
-        answers[q.id] = cur.value && cur.value.trim ? cur.value.trim() : cur.value;
-      }
-      if(answers[q.id] && answers[q.id] !== '') completed.add(stepIndex);
-      renderSteps(); updateControls();
+      const val = cur.value && cur.value.trim ? cur.value.trim() : cur.value;
+      if(val !== '') answers[q.id] = val;
+      else delete answers[q.id];
+      renderSteps();
     }
 
-    // controls
-    function updateControls(){
-      const prev = el('prevBtn'); const next = el('nextBtn'); prev.disabled = stepIndex===0;
-      const qs = Q[lang];
-      if(stepIndex === qs.length-1){ next.innerHTML = (lang==='fr'? 'Terminer ✓':'Finish ✓'); } else { next.innerHTML = (lang==='fr'? 'Suivant →':'Next →'); }
-    }
-
-    el('prevBtn').addEventListener('click', ()=>{ saveCurrent(); if(stepIndex>0) stepIndex--; renderStepContent(); updatePreview(); });
-    el('nextBtn').addEventListener('click', ()=>{ saveCurrent(); const qs = Q[lang]; if(stepIndex < qs.length-1){ stepIndex++; renderStepContent(); updatePreview(); } else { finish(); } });
-
-    // preview grid
-    function updatePreview(){
-      const age = parseInt(el('inputAge').value) || 0; const death = parseInt(el('inputDeath').value) || 80;
-      const total = Math.max(1, death) * 52; const lived = Math.max(0, age) * 52; const grid = el('gridPreview'); grid.innerHTML='';
-      // limit number of cells created on very large death ages for perf
-      const maxCells = (window.innerWidth < 480) ? Math.min(total, 26*2) : Math.min(total, 52*2);
-      const step = Math.ceil(total / maxCells);
-      for(let i=0; i<total; i+=step){ const c = document.createElement('div'); c.className='cell'; if(i<lived) c.classList.add('past'); if(i>=lived && i<lived+step) c.classList.add('now'); grid.appendChild(c);} 
-      const percent = Math.round((lived/total)*100); el('quickPercent').textContent = percent + '%'; el('quickLeft').textContent = Math.max(0,total - lived) + (lang==='fr'? ' semaines restantes':' weeks remaining');
-    }
-    el('inputAge').addEventListener('input', updatePreview); el('inputDeath').addEventListener('input', updatePreview);
-
-    // finish and show report
-    function finish(){ saveCurrent(); const name = el('inputName').value || (lang==='fr'? 'Ami':'Friend'); const age = parseInt(el('inputAge').value)||0; const death = parseInt(el('inputDeath').value)||80; const total = death*52; const lived = age*52; const percent = Math.round((lived/total)*100);
-      const reg = answers['q_regret']||''; const loved = answers['q_loved']||''; const dream = answers['q_dream']||''; const project = answers['q_project']||''; const pride = answers['q_pride']||''; const habit = answers['q_habit']||''; const commit = answers['q_commit']||'';
-
-      let summary = ''; if(reg) summary += (lang==='fr'? `Ton regret majeur : "${reg}". ` : `Your major regret: "${reg}". `); else summary += (lang==='fr'? "Tu n'as pas précisé de regret principal. Réfléchis-y." : "You didn't specify a main regret. Reflect on it.");
-      if(dream) summary += (lang==='fr'? ' Tu as un rêve en tête — commence par un pas minuscule.' : ' You have a dream — start with a tiny step.'); else summary += (lang==='fr'? ' Si tu n\'as pas de rêve, commence par explorer des curiosités.' : ' If you have no dream, start by exploring curiosities.');
-
-      const actions = []; if(dream) actions.push(lang==='fr'? 'Écris le premier micro-pas pour ton rêve aujourd\'hui.' : 'Write the first micro-step for your dream today.'); if(habit) actions.push((lang==='fr'? 'Mets en place : ':'Start: ') + habit); else actions.push(lang==='fr'? 'Choisis une habitude simple (ex: marcher 20 min).' : 'Choose a simple habit (e.g. walk 20 min).'); if(commit) actions.push((lang==='fr'? 'Premier pas: ':'First step: ') + commit); actions.push(lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.');
-
-      const advPoolFr = ["Vous avez encore du temps — agissez maintenant.","Les petits pas constants battent la motivation intermittente.","Parlez à une personne proche aujourd'hui — la connexion change tout.","1 habitude, 30 jours — testez et observez la différence."]; const advPoolEn = ["You still have time — act now.","Small consistent steps beat intermittent motivation.","Talk to someone close today — connection matters.","One habit, 30 days — try it and observe the change."]; const adv = (lang==='fr'? advPoolFr:advPoolEn)[Math.floor(Math.random()*4)];
-
-      // build report DOM
-      const reportCard = el('reportCard'); reportCard.style.display='block'; const reportContent = el('reportContent'); reportContent.innerHTML='';
-      const head = document.createElement('div'); head.innerHTML = `<strong>${lang==='fr'? 'Rapport de vie pour':'Life report for'} ${name}</strong><p>${lang==='fr'? 'Vous avez déjà vécu ':'You have lived '}${lived} ${lang==='fr'? 'semaines (':'weeks ('}${percent}% )</p>`; reportContent.appendChild(head);
-      const summ = document.createElement('p'); summ.textContent = summary; reportContent.appendChild(summ);
-      const ul = document.createElement('ul'); actions.forEach(a=>{ const li=document.createElement('li'); li.textContent = a; ul.appendChild(li); }); reportContent.appendChild(ul);
-      el('finalAdvice').textContent = adv;
-
-      // save snapshot locally
-      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); arr.unshift({date:new Date().toISOString(), name, lang, age, death, percent, answers}); localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20))); }catch(e){}
-
-      reportCard.scrollIntoView({behavior:'smooth'});
-    }
-
-    // download JSON
-    el('downloadJSON').addEventListener('click', ()=>{
-      try{ const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots')||'[]'); const blob = new Blob([JSON.stringify(arr[0]||{},null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='life_mirror_report.json'; a.click(); URL.revokeObjectURL(url);}catch(e){}
+    // prev/next
+    prevBtn.addEventListener('click', ()=>{ saveCurrent(); if(index>0){ index--; renderQuestion(); updatePreview(); } });
+    nextBtn.addEventListener('click', ()=>{ 
+      saveCurrent();
+      if(index < QUESTIONS[lang].length - 1){ index++; renderQuestion(); updatePreview(); } else { finish(); }
     });
 
-    // restart
-    el('restart').addEventListener('click', ()=>{ location.reload(); });
+    // preview grid / stats
+    function updatePreview(){
+      const age = parseInt(ageInput.value) || parseInt(answers['q_age']) || 0;
+      const death = parseInt(deathInput.value) || parseInt(answers['q_death']) || 80;
+      const total = Math.max(1, death) * 52;
+      const lived = Math.max(0, age) * 52;
+
+      // limit for DOM performance
+      const maxCells = (window.innerWidth < 480) ? Math.min(total, 26*2) : Math.min(total, 52*2);
+      const step = Math.max(1, Math.ceil(total / maxCells));
+
+      previewGrid.innerHTML = '';
+      for(let i=0;i<total;i+=step){
+        const d = document.createElement('div');
+        d.className = 'cell';
+        if(i < lived) d.classList.add('past');
+        if(i >= lived && i < lived + step) d.classList.add('now');
+        previewGrid.appendChild(d);
+      }
+
+      const percent = Math.round((lived/total) * 100);
+      percentView.textContent = percent + '%';
+      weeksLeft.textContent = Math.max(0, total - lived) + (lang==='fr' ? ' semaines restantes' : ' weeks remaining');
+      totalCases.textContent = (lang==='fr' ? 'Total cases: ' : 'Total cases: ') + total;
+    }
+
+    // wire sidebar changes to preview & questions
+    ageInput.addEventListener('input', updatePreview);
+    deathInput.addEventListener('input', updatePreview);
+    nameInput.addEventListener('input', ()=>{ /* sync when user types in sidebar */ });
+
+    // finish -> analysis + show report
+    function finish(){
+      saveCurrent();
+
+      // Prepare data (prefer sidebar values when present)
+      const name = nameInput.value || answers['q_name'] || (lang==='fr' ? 'Ami' : 'Friend');
+      const age = parseInt(ageInput.value) || parseInt(answers['q_age']) || 0;
+      const death = parseInt(deathInput.value) || parseInt(answers['q_death']) || 80;
+      const total = Math.max(1, death) * 52;
+      const lived = Math.max(0, age) * 52;
+      const yearsLeft = Math.max(0, death - age);
+      const percent = Math.round((lived/total) * 100);
+
+      // Gather answers (safe defaults)
+      const happy = answers['q_happy'] || (lang==='fr'?'Non précisé':'Not specified');
+      const fear = answers['q_fear'] || (lang==='fr'?'Non précisé':'Not specified');
+      const dream = answers['q_dream'] || (lang==='fr'?'Non précisé':'Not specified');
+      const regret = answers['q_regret'] || (lang==='fr'?'Non précisé':'Not specified');
+      const people = answers['q_people'] || (lang==='fr'?'Non précisé':'Not specified');
+      const change = answers['q_change'] || (lang==='fr'?'Non précisé':'Not specified');
+      const message = answers['q_message'] || (lang==='fr'?'Non précisé':'Not specified');
+
+      // Build analysis text (some simple heuristic rules to create personalization)
+      let tone = '';
+      if(percent >= 70) tone = lang==='fr'? "Tu as déjà vécu une grande partie de ta vie prévue — chaque semaine compte." : "You've already lived a large portion of your expected life — each week counts.";
+      else if(percent >= 35) tone = lang==='fr'? "Tu as encore du temps important — il est temps d'agir intentionnellement." : "You still have significant time — it's time to act intentionally.";
+      else tone = lang==='fr'? "Tu es encore au début — utilise ce capital temps pour bâtir ce qui compte." : "You're still early — use this time capital to build what matters.";
+
+      // Actionable steps (tailored)
+      const actions = [];
+      if(dream && dream !== 'Non précisé' && dream !== 'Not specified') actions.push(lang==='fr'? `Écris le premier micro-pas pour ton rêve : ${dream}` : `Write the first micro-step for your dream: ${dream}`);
+      if(change && change !== 'Non précisé' && change !== 'Not specified') actions.push(lang==='fr'? `Commence par : ${change}` : `Start with: ${change}`);
+      if(!actions.length) actions.push(lang==='fr'? 'Choisis une habitude simple : marche 20 min / écris 10 min.' : 'Pick a small habit: walk 20 min / write 10 min.');
+
+      // Compose report HTML
+      const frReport = `
+        <div class="card">
+          <strong>${lang==='fr'? 'Rapport de vie pour' : 'Life report for'} ${name}</strong>
+          <p style="margin-top:8px;color:var(--muted)">${lang==='fr'? 'Semaines vécues :' : 'Weeks lived:'} <strong>${lived}</strong> — ${percent}%</p>
+          <p style="margin-top:6px;color:var(--muted)">${lang==='fr'? 'Semaines totales (cases) :' : 'Total weeks (cases):'} <strong>${total}</strong></p>
+
+          <h3 style="margin-top:12px">${lang==='fr'? 'Analyse' : 'Analysis'}</h3>
+          <p style="color:var(--muted)">${tone}</p>
+
+          <h4 style="margin-top:10px">${lang==='fr'? 'Détails de tes réponses' : 'Your answers'}</h4>
+          <p><strong>${lang==='fr'? 'Ce qui te rend heureux' : 'What makes you happy'}</strong>: ${happy}</p>
+          <p><strong>${lang==='fr'? 'Tes peurs/stress' : 'Your fears/stress'}</strong>: ${fear}</p>
+          <p><strong>${lang==='fr'? 'Rêve principal' : 'Main dream'}</strong>: ${dream}</p>
+          <p><strong>${lang==='fr'? 'Regret' : 'Regret'}</strong>: ${regret}</p>
+          <p><strong>${lang==='fr'? 'Personnes importantes' : 'Important people'}</strong>: ${people}</p>
+          <p><strong>${lang==='fr'? 'Changement voulu' : 'Wanted change'}</strong>: ${change}</p>
+
+          <h4 style="margin-top:12px">${lang==='fr'? 'Actions recommandées' : 'Recommended actions'}</h4>
+          <ul>
+            ${actions.map(a=>`<li style="margin-bottom:8px">${a}</li>`).join('')}
+            <li style="margin-bottom:8px">${lang==='fr'? 'Réserve 30 minutes cette semaine pour planifier 1 an / 5 ans.' : 'Reserve 30 minutes this week to plan 1 year / 5 years.'}</li>
+          </ul>
+
+          <h4 style="margin-top:12px">${lang==='fr'? 'Message final' : 'Final message'}</h4>
+          <p style="font-style:italic">${message}</p>
+        </div>
+      `;
+
+      // Render report
+      reportContent.innerHTML = frReport;
+      adviceBox.style.display = 'block';
+      adviceBox.textContent = lang==='fr'? tone : tone;
+      reportCard.style.display = 'block';
+      // ensure the report wrapper is visible (was hidden via CSS .report{display:none})
+      reportSection.style.display = 'flex';
+      reportSection.scrollIntoView({behavior:'smooth'});
+
+      // Save last snapshot to localStorage
+      try{
+        const snapshot = {date: new Date().toISOString(), name, lang, age, death, totalCases: total, weeksLived: lived, percent, answers};
+        const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots') || '[]');
+        arr.unshift(snapshot);
+        localStorage.setItem('life_mirror_snapshots', JSON.stringify(arr.slice(0,20)));
+      }catch(e){}
+    }
+
+    // Download JSON
+    downloadJSON.addEventListener('click', ()=>{
+      try{
+        const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots') || '[]');
+        const blob = new Blob([JSON.stringify(arr[0] || {}, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'life_mirror_report.json'; a.click(); URL.revokeObjectURL(url);
+      }catch(e){ alert(lang==='fr'? 'Impossible de télécharger le JSON.' : 'Could not download JSON.'); }
+    });
+
+    // Download PDF (capture the report card area plus preview grid snapshot)
+    downloadPDF.addEventListener('click', async ()=>{
+      const node = reportCard;
+      if(!node) return;
+      try{
+        // Render a larger snapshot of previewGrid to include in PDF: create a temporary wrapper
+        // use html2canvas
+        const scale = Math.min(2, window.devicePixelRatio || 1);
+        const canvas = await html2canvas(node, {scale, useCORS:true, backgroundColor: '#071428'});
+        const imgData = canvas.toDataURL('image/png');
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({orientation:'portrait', unit:'pt', format:'a4'});
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 24;
+        const imgWidth = pageWidth - margin*2;
+        const imgHeight = canvas.height * (imgWidth / canvas.width);
+
+        pdf.addImage(imgData, 'PNG', margin, 20, imgWidth, imgHeight);
+        pdf.save('life_mirror_report.pdf');
+      }catch(e){
+        console.error(e);
+        alert(lang==='fr'? "Erreur génération PDF." : "Error generating PDF.");
+      }
+    });
+
+    // Restart
+    restartBtn.addEventListener('click', ()=>{
+      if(confirm(lang==='fr'? "Recommencer ? (les réponses non sauvegardées seront perdues)" : "Restart? (unsaved answers will be lost)")){
+        localStorage.removeItem('life_mirror_snapshots');
+        location.reload();
+      }
+    });
+
+    // keyboard nav
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+    });
 
     // init
-    setLang('fr'); renderSteps(); renderStepContent(); updatePreview(); updateStaticTexts();
+    function init(){
+      setLang('fr');
+      renderSteps();
+      renderQuestion();
+      updatePreview();
+      localizeStatic();
+      // load previous snapshot if exists (optional)
+      try{
+        const arr = JSON.parse(localStorage.getItem('life_mirror_snapshots') || '[]');
+        if(arr && arr[0]){ /* keep but do not auto load to avoid surprising user */ }
+      }catch(e){}
+    }
+
+    init();
+  })();
   </script>
 </body>
 </html>
